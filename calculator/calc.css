@@ -1,0 +1,95 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.container{
+    background-color: burlywood;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+
+}
+.calc{
+    width: 30rem;
+    height: 40rem;
+    border: 2px solid black;
+    border-radius: 20px;
+}
+#display{
+    width: 100%;
+    height: 18%;
+    background-color: rgba(0, 0, 0, 0.445);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    font-size: 3.5rem;
+    font-weight: 700;
+}
+.buttons{
+    background-color: rgba(0, 0, 0, 0.699);
+    width: 100%;
+    height: 85%;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    row-gap: 10px;
+    padding: 1rem;
+}
+.first {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-evenly;
+    width: 100%;
+}
+.second {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-evenly;
+    width: 100%;
+}
+.third {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-evenly;
+    width: 100%;
+}
+.four {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-evenly;
+    width: 100%;
+}
+.five{
+    display: flex;
+    justify-content: left;
+    width: 100%;
+    padding-left: 1.5rem;
+}
+button{
+    font-size: 3rem;
+    border-radius: 100px;
+    background-color:rgba(0, 0, 0, 0.445);
+    color: white;
+    border: 2px solid black;
+    width: 70px;
+    height: 70px;
+    text-align: center;
+}
+button:hover{
+    background-color:rgba(0, 0, 0, 0.123);
+
+}
+#op{
+    background-color: rgba(255, 255, 0, 0.692);
+}
+.display{
+    color: white;
+    padding: 2rem;
+    font-size: 2rem;
+    text-align: left;
+}

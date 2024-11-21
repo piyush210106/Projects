@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="rps.css">
+</head>
+<body>
+    <div class="container">
+        <h1>ROCK-PAPER-SCISSORS</h1>
+        <div class="buttons">
+            <button id="rock" onclick="rock1()">👊</button>
+            <button id="paper" onclick="paper1()">🖐</button>
+            <button id="scissor" onclick="scissor1()">✌</button>
+    
+        </div>
+        <h2 id="player">PLAYER:</h2>
+        <h2 id="comp">COMPUTER:</h2>
+        <h1 id="result"></h1>
+        <div class="pcnt">
+            <label for="">Player Score: </label>
+            <input type="number" readonly id="psc" value="0">
+    
+        </div>
+        <div class="ccnt">
+            <label for="">Computer Score: </label>
+            <input type="number" readonly id="csc" value="0">
+    
+        </div>
+
+    </div>
+    <script src="rps.js"></script>
+</body>
+</html>
