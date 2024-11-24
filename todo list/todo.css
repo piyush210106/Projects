@@ -1,0 +1,102 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.block{
+    background-image: linear-gradient( 89.5deg,  rgba(131,204,255,1) 0.4%, rgba(66,144,251,1) 100.3% );
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content:top;
+    align-items: center;
+    overflow-x: hidden;
+    padding: 5%;
+}
+.block1{
+    display: flex;
+    gap: 3rem;
+    height: 20%;
+    width: 30%; 
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+    margin-bottom: 2rem;
+}
+input{
+    font-size: 1.5rem;
+    text-align: left;
+    padding: 0.5rem;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+#add{
+    width: 6rem;
+    font-size: 1.3rem;
+    padding: 0.7rem;
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: coral;
+    font-weight: bold;
+}
+.container{
+    display: flex;
+    width: 100%;
+    background-color: hsl(271, 76%, 63%);
+    gap: 3rem;
+    height: 10%;
+    justify-content: space-between;
+    padding: 2rem;
+    padding-bottom: 2rem;
+    font-size: 1.5rem;
+    border: 2px solid black;
+    align-items: center;
+    border-radius: 20px;
+    font-family: 'Sour Gummy';
+    font-weight: 300;
+    /* font-style: italic; */
+
+}
+.delete{
+    background-color: hsl(0, 100%, 50%);
+    height: 2rem;
+    text-align: center;
+    border: 2px solid black;
+    border-radius: 10px;
+    font-weight: bold;
+    width: 5rem;
+    font-family: 'Sour Gummy';
+    font-weight: 800;
+
+}
+#head{
+    font-size: 7rem;
+    font-weight: bold;
+    color: aliceblue;
+    font-family: "Lacquer";
+}
+.content{
+    width: 55%;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.work{
+    width: 30%;
+}
+#add:hover{
+    background-color: hsl(16, 100%, 75%);
+}
+#add:active{
+    background-color: hsl(16, 100%, 85%);
+}
+.delete:hover{
+    background-color: hsl(0, 100%, 60%);
+}
+.delete:active{
+    background-color: hsl(0, 100%, 70%);
+}
