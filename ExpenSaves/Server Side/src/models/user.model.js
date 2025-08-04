@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
     {
+        google_id:{
+            type: String,
+            required: true
+        },
         email: {
             type: String,
             required: true
@@ -10,13 +14,18 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        profile: {
+        profile_pic: {
             type: String,
             required: true
+        },
+        refreshToken: {
+            type: String,
+            required: false
         }
     }, 
     {
         timestamps: true
     });
 
-export default User = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
+export default User;

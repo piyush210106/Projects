@@ -9,20 +9,21 @@ import Landing from "./components/Landing"
 import Navbar from "./components/Navbar"
 import Reminders from "./components/Reminders"
 import Statistics from "./components/Statistics"
+import Navbar2 from './components/Navbar2'
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
         <div>
-          <Navbar/>
+          <Navbar2/>
           <Landing/>
           <Footer/>
         </div>
     )
   },
   {
-    path: "/home",
+    path: "/user/home",
     element: (
       <div>
         <Navbar/>
@@ -32,7 +33,7 @@ const router = createBrowserRouter([
     )
   },
   {
-    path: "/Statistics",
+    path: "/user/Statistics",
     element: (
       <div>
         <Navbar/>
@@ -42,7 +43,7 @@ const router = createBrowserRouter([
     )
   },
   {
-    path: "/history",
+    path: "/user/history",
     element: (
       <div>
         <Navbar/>
@@ -52,7 +53,7 @@ const router = createBrowserRouter([
     )
   },
   {
-    path: "/cashy",
+    path: "/user/cashy",
     element: (
       <div>
         <Navbar/>
@@ -62,7 +63,7 @@ const router = createBrowserRouter([
     )
   },
   {
-    path: "/reminders",
+    path: "/user/reminders",
     element: (
       <div>
         <Navbar/>
@@ -73,7 +74,7 @@ const router = createBrowserRouter([
 
   },
   {
-    path: "/calculator",
+    path: "/user/calculator",
     element: (
       <div>
         <Navbar/>
