@@ -37,8 +37,8 @@ passport.deserializeUser((id, done) => User.findById(id).then(user => done(null,
 
 
 const generateTokens = (user) => {
-    let accessToken = jwt.sign({id: user.google_id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "30m"});
-    let refreshToken = jwt.sign({id: user.google_id}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: "10d"});
+    let accessToken = jwt.sign({id: user._id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "30m"});
+    let refreshToken = jwt.sign({id: user._id}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: "10d"});
 
     return {accessToken, refreshToken};
 }
@@ -82,7 +82,6 @@ const userLogout = async (req, res) => {
     res.clearCookie("refreshToken");
     res.clearCookie("accessToken");
     res.sendStatus(200);
-    
 }
 
 const TokenRefresh = async (req, res) => {

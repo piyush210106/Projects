@@ -11,7 +11,7 @@ function Navbar() {
         <h2 className='font-extrabold text-3xl'>ExpenSaves</h2>
       </div>
 
-      <div className='flex space-x-3'>
+      <div className='flex space-x-3 mr-2'>
             <NavLink to="/user/home" className='border-2 p-2 rounded-md'>Home</NavLink>
             <NavLink to="/user/statistics" className='border-2 p-2 rounded-md'>Statistics</NavLink>
             <NavLink to="/user/history" className='border-2 p-2 rounded-md'>History</NavLink>
