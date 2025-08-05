@@ -1,23 +1,26 @@
 import passport from "passport";
 import User from "../models/user.model.js"
-import GoogleStrategy from "passport-google-oauth20"
+import { Strategy as GoogleStrategy } from "passport-google-oauth20"
 import jwt from "jsonwebtoken"
-
+import dotenv from "dotenv"
+dotenv.config({
+    path:"./.env"
+});
 
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "/auth/google/callback"
+    callbackURL: "http://localhost:8000/auth/google/callback"
 }, 
-    async (accessToken, refreshToken, Profile, next) => {
+    async (accessToken, refreshToken, profile, next) => {
         try {
-          const user = await User.find({google_id: Profile.id});
+          let user = await User.findOne({google_id: profile.id});
 
           if(!user){
             user = await User.create({
-                google_id: Profile.id,
-                email: Profile.emails[0].value,
-                name: Profile.name,
+                google_id: profile.id,
+                email: profile.emails[0].value,
+                name: profile.displayName,
                 profile_pic: profile.photos[0].value
             });
           }
@@ -40,17 +43,19 @@ const generateTokens = (user) => {
     return {accessToken, refreshToken};
 }
 
-const askConsent = () => {
-    passport.authenticate( "google", {scope: ["profile", "email"]});
+const askConsent = (req, res, next) => {
+    console.log("google route hit");
+    passport.authenticate( "google", {scope: ["profile", "email"]})(req, res, next);
+    
 }
 
-const userLogin = () => {
+const userLogin = (req, res, next) => {
     passport.authenticate("google", {session: false},
-        async (req, res) => {
-        const {accessToken, refreshToken} = generateTokens(req.user);
+        async (err, user) => {
+        const {accessToken, refreshToken} = generateTokens(user);
 
-            req.user.refreshToken = refreshToken;
-            await req.user.save();
+            user.refreshToken = refreshToken;
+            await user.save();
 
             res
             .cookie("refreshToken", refreshToken, {
@@ -63,7 +68,7 @@ const userLogin = () => {
             })
             res.redirect("http://localhost:5173/user/home");
         }
-    );
+    )(req, res, next);
 }
 
 const userLogout = async (req, res) => {
