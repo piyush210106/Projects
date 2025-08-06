@@ -19,7 +19,7 @@ const transactionSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        reminderDate:{
+        date: {
             type: Date,
             required: true
         },
@@ -31,4 +31,6 @@ const transactionSchema = new mongoose.Schema(
     },
     { timestamps: true})
 
-export default Transaction = mongoose.model("Transation", transactionSchema);
+const Transaction = mongoose.model("Transaction", transactionSchema);
+
+export default Transaction;

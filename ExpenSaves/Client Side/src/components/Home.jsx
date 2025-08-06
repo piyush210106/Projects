@@ -5,27 +5,21 @@ import axios from 'axios'
 
 function Home() {
 
-  let [amount, setAmount] = useState()
-  let [description, setDescription] = useState()
-  let [date, setDate] = useState()
   let [transactions, setTransactions] = useState([])
   let [income, setIncome] = useState();
   let [expense, setExpense] = useState();
   let [formdata, setformdata] = useState({
     amount: "",
     title: "",
-    type: "",
     category: "",
-    date: ""
+    date: "",
+    type: ""
   })
 
-  let datetoday = new Date().toLocaleString;
+  let datetoday = new Date().toLocaleString();
   const options = ["Housing", "Transportation", "Food", "Health", "Entertainment", "Lifestyle", " Financial Obligations", "Miscellaneous"];
-  const [selected, setSelected] = useState(null);
 
   const types = ["Credit", "Debit"];
-  const [type, setType] = useState(null);
-
 
   useEffect( () => {
       const fetchdata = async () => {
@@ -44,10 +38,13 @@ function Home() {
   }, [])
 
   const handleChange = (e) => {
-      setformdata({
-        ...formdata, [e.target.name]: e.target.value
-      })
-  }
+    const { name, value, type, checked } = e.target;
+
+    setformdata((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,7 +52,7 @@ function Home() {
 
     try {
        await axios.post("http://localhost:8000/", formdata);
-       console.log("transaction added successfully!!!");
+       console.log("Transaction added successfully!!!");
        setformdata({
             amount: "",
             title: "",
@@ -80,13 +77,6 @@ function Home() {
   }, [transactions])
 
 
-  const handleCheckbox = (option) => {
-    setSelected(selected === option ? null : option); 
-  };
-
-    const handleType = (check) => {
-    setType(check === type ? null : check); 
-  };
 
    const filtered = transactions.filter( entry => entry.date === datetoday);
   // setTransactions(filtered);
@@ -100,8 +90,8 @@ function Home() {
           <div className='flex justify-between items-center'>
             
               <div className='flex flex-col justify-center space-y-3 w-[70%] '>
-                <input type="number" onChange={handleChange} value={amount} placeholder='Enter Amount' className='border-2 border-white w-[30%] p-2 rounded-md' min={1}/>
-                <input type="text" onChange={handleChange} value={description} placeholder='Enter Description' className='border-2 boder-white p-2 rounded-md w-[40%]'/>
+                <input type="number" name='amount' onChange={handleChange} value={formdata.amount} placeholder='Enter Amount' className='border-2 border-white w-[30%] p-2 rounded-md' min={1}/>
+                <input type="text" name='title' onChange={handleChange} value={formdata.title} placeholder='Enter Title' className='border-2 boder-white p-2 rounded-md w-[40%]'/>
                 <div className="flex border-2 border-white space-x-2 p-2 rounded-md">
                       {options.map((option, index) => (
                         <label
@@ -109,10 +99,11 @@ function Home() {
                           className="flex items-center space-x-2 cursor-pointer"
                         >
                           <input
-                            type="checkbox"
-                            checked={selected === option}
-                            onChange={() => handleCheckbox(option)}
-                            className="form-checkbox text-blue-500 h-5 w-5"
+                            type="radio"
+                            name="category"
+                            value={option}
+                            checked={formdata.category === option}
+                            onChange={handleChange}
                           />
                           <span>{option}</span>
                         </label>
@@ -121,19 +112,20 @@ function Home() {
               </div>
 
               <div className='flex flex-col p-4 space-y-5 justify-end items-center mr-2 w-[30%] '>
-                <input type="date" onChange={handleChange} value={date} className='border-2 border-white rounded-md p-2'/>
+                <input type="date" name='date' onChange={handleChange} value={formdata.date} className='border-2 border-white rounded-md p-2'/>
                 <div className="flex justify-center border-2 border-white space-x-2 p-2 w-[60%] rounded-md">
                       {types.map((check, index) => (
                         <label
                           key={index}
                           className="flex items-center space-x-2 cursor-pointer"
                         >
-                          <input
-                            type="checkbox"
-                            checked={type === check}
-                            onChange={() => handleType(check)}
-                            className="form-checkbox text-blue-500 h-5 w-5"
-                          />
+                        <input
+                          type="radio"
+                          name="type"
+                          value={check}
+                          checked={formdata.type === check}
+                          onChange={handleChange}
+                        />             
                           <span>{check}</span>
                         </label>
                       ))}

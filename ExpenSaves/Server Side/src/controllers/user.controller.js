@@ -72,42 +72,22 @@ const userLogin = (req, res, next) => {
 }
 
 const userLogout = async (req, res) => {
-    const accesstoken = req.cookie.access_Token;
-    const refreshtoken = req.cookie.refresh_Token;
-
-    if(refreshtoken){
-        const decoded = jwt.verify(refreshtoken, process.jwt.REFRESH_TOKEN_SECRET);
-        await User.findByIdAndUpdate(decoded.id, {refreshToken: null});
-    }
-    res.clearCookie("refreshToken");
-    res.clearCookie("accessToken");
-    res.sendStatus(200);
-}
-
-const TokenRefresh = async (req, res) => {
-    const token = req.cookie.refresh_Token;
-    if(!token) return res.sendStatus(401);
     try {
-        const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
-        const user = await User.findById(decoded.id);
-        if(!user || user.refreshToken !== token) return res.sendStatus(403);
-        const {newAccessToken, newRefreshToken} = generateTokens(user).accessToken;
-        user.refreshToken = newRefreshToken;
-        await user.save();
+        const accesstoken = req.cookies.accessToken;
+        const refreshtoken = req.cookies.refreshToken;
 
-        res
-        .cookie("refreshToken", newRefreshToken, {
-            httpOnly: true,
-            secure: false,
-        })
-        .cookie("accessToken", newAccessToken, {
-            httpOnly: true,
-            secure: false,
-        })
+        if(accesstoken){
+            const decoded = jwt.verify(accesstoken, process.env.ACCESS_TOKEN_SECRET);
+            await User.findByIdAndUpdate(decoded.id, {refreshToken: null});
+        }
+        return res.clearCookie("refreshToken")
+                  .clearCookie("accessToken")
+                  .status(200);
 
     } catch (error) {
-        return res.sendStatus(403);
+        return res.status().json({message: "User logout failed ", error}); 
     }
 }
 
-export {askConsent, userLogin, userLogout, TokenRefresh}
+
+export {askConsent, userLogin, userLogout, generateTokens}

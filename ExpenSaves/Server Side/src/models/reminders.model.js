@@ -19,6 +19,10 @@ const reminderSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        reminderDate:{
+            type: Date,
+            required: true
+        },
         userid: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
@@ -27,4 +31,6 @@ const reminderSchema = new mongoose.Schema(
     },
     { timestamps: true})
 
-export default Reminder = mongoose.model("Reminder", reminderSchema);
+const Reminder = mongoose.model("Reminder", reminderSchema);
+
+export default Reminder;
