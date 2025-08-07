@@ -1,9 +1,52 @@
 import React from 'react'
+import { useState } from 'react'
+import axios from 'axios';
 
 function Cashy() {
+
+  const [prompt, setPrompt] = useState("");
+  const [history, setHistory] = useState([{role: 'Bot', text: "Hi"}]);
+
+  const handleChange = (e) => {
+    setPrompt(e.target.value);
+  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const userMessage = { role: 'User', text: prompt};
+    setHistory( (prev) => [...prev, userMessage]);
+    setPrompt("");
+
+    try {
+      const res = await axios.post("http://localhost:8000/user/cashy", {prompt}, {withCredentials: true});
+      const botMessage = { role: 'Bot', text: res.response.data};
+      setHistory((prev) => [...prev, botMessage]);
+    } catch (error) {
+      setHistory((prev) => [...prev, "Something went wrong while generating response"]);
+      console.log(error);
+    }
+  }
   return (
-    <div>
-      Cashy
+    <div className='flex flex-col justify-center items-center p-4 space-y-5'>
+
+      <h1 className='font-extrabold'>Cashy</h1>
+
+      <div className='flex flex-col space-y-2 border-2 border-white p-4 w-[70%] rounded-md'>
+        <>
+        {
+           history.map((message, index) => (
+            <div key={index}>
+              <p>{message.text}</p>
+            </div>
+           ))
+        }
+        </>
+      </div>
+
+      <div className='flex space-x-3'>
+        <input type="text" onChange= {handleChange} placeholder='Enter prompt' value={prompt} className='border-2 border-white p-2'/>
+        <button onClick={handleSubmit}>Submit</button>
+      </div>
     </div>
   )
 }

@@ -3,6 +3,7 @@ import { userLogout } from "../controllers/user.controller.js";
 import { addTransaction, getHistory } from "../controllers/transactions.controller.js";
 import { addReminder, getReminders } from "../controllers/reminders.controller.js";
 import { refreshTokens } from "../middleware/refreshToken.middleware.js"
+import { talkCashy } from "../controllers/cashy.controller.js";
 
 const transactionRouter = Router();
 
@@ -13,5 +14,5 @@ const transactionRouter = Router();
  transactionRouter.route("/reminders").post(refreshTokens, addReminder);
  transactionRouter.route("/reminders").get(refreshTokens, getReminders);
  transactionRouter.route("/logout").get(refreshTokens, userLogout);
-
+ transactionRouter.route("/cashy").post(refreshTokens, talkCashy);
 export default transactionRouter;

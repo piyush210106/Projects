@@ -1,6 +1,5 @@
 import Transaction from "../models/transaction.model.js"
 import User from "../models/user.model.js"
-import jwt from "jsonwebtoken"
 
 
 const addTransaction = async (req, res) => {
@@ -8,10 +7,11 @@ const addTransaction = async (req, res) => {
 try {
     let user = await User.findById(req.userId);
     if(!user) return res.status().json({message: "Invalid User"});
-
-    let { amount, title, category, type, date } = req.body.data;
+    console.log(user);
+    console.log(req.body);
+    let { amount, title, category, type, date } = req.body;
     if(!amount || !title || !category || !type || !date) 
-        return res.status().json({message: "All fields Required"});
+        return res.status(400).json({message: "All fields Required"});
 
     let newtransaction = new Transaction({
         title,
@@ -22,23 +22,25 @@ try {
         userid: user._id
     })
     await newtransaction.save();
-    return res.status().json({message: "Transaction added Successfully!!", newtransaction});
+    return res.status(201).json({message: "Transaction added Successfully!!", newtransaction});
 
 } catch (error) {
-    return res.status().json({message: "Error in adding transaction ", error});
+    console.log(error);
+    return res.status(400).json({message: "Error in adding transaction ", error});
 }
 }   
 
 const getHistory =  async (req, res) => {
     try {
         let user = await User.findById(req.userId);
-        if(!user) return res.status().json({message: "User not Found"});
+        if(!user) return res.status(400).json({message: "User not Found"});
 
         const transactions = await Transaction.find({userid: req.userId})
                                               .sort({date: -1});
-        return res.status().json(transactions);
+        return res.status(200).json(transactions);
     } catch (error) {
-        return res.status().json({message: "Error in fetching transactions ", error});
+        console.log(error);
+        return res.status(400).json({message: "Error in fetching transactions ", error});
     }
 }
 

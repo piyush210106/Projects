@@ -6,22 +6,12 @@ import jwt from "jsonwebtoken"
 const addReminder = async (req, res) => {
     
 try {
-    let token = req.cookie.accessToken;
-    let userId;
-
-    try {
-        let decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        userId = decoded.id;
-    } catch (error) {
-        return res.status().json({message: "Invalid or Expired token"});
-    }
-
-    let user = await User.findById(decoded_id);
-    if(!user) return res.status().json({message: "Invalid User"});
-
-    let { amount, title, category, type, reminderDate } = req.body.data;
+    let user = await User.findById(req.userId);
+    if(!user) return res.status(400).json({message: "Invalid User"});
+    console.log(req.body);
+    let { amount, title, category, type, reminderDate } = req.body;
     if(!amount || !title || !category || !type || !reminderDate) 
-        return res.status().json({message: "All fields Required"});
+        return res.status(400).json({message: "All fields Required"});
 
     let newreminder = new Reminder({
         title,
@@ -32,22 +22,25 @@ try {
         userid: user._id
     })
     await newreminder.save();
-    return res.status().json({message: "Reminder added Successfully!!", newreminder});
+    return res.status(201).json({message: "Reminder added Successfully!!", newreminder});
 
 } catch (error) {
-    return res.status().json({message: "Error in adding reminder ", error});
+    console.log(error);
+    return res.status(400).json({message: "Error in adding reminder ", error});
 }
 } 
 
 const getReminders = async (req, res) => {
     try {
         let user = await User.findById(req.userId);
-        if(!user) return res.status().json({message: "Unauthorized"});
+        if(!user) return res.status(401).json({message: "Unauthorized"});
 
         const reminders = await Reminder.find({userid: req.userId})
                                         .sort({date: 1})
+        return res.status(200).json(reminders);
     } catch (error) {
-        return res.status().json({message: "Error in fetching reminders ", error});
+        console.log(error);
+        return res.status(400).json({message: "Error in fetching reminders ", error});
     }
 }
 

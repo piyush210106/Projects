@@ -1,19 +1,35 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-
+import Card from './Card';
 function Reminders() {
   let [reminder, setReminder] = useState([]);
   let [formdata, setformdata] = useState({
     amount: "",
     title: "",
     category: "",
-    date: "",
+    reminderDate: "",
     type: ""
   })
 
   const options = ["Housing", "Transportation", "Food", "Health", "Entertainment", "Lifestyle", " Financial Obligations", "Miscellaneous"];
   const types = ["Credit", "Debit"];
   
+    useEffect( () => {
+      const fetchreminders = async () => {
+      await axios
+      .get("http://localhost:8000/user/reminders", {withCredentials: true})
+      .then( (res) => {
+        setReminder(res.data);
+        console.log("Reminders Fetched successfully !!");
+      })
+      .catch( (error) => {
+          console.error("Error in fetching Reminders ", error);
+      })
+
+      }
+      fetchreminders();
+  }, [])
+
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -29,19 +45,19 @@ function Reminders() {
     console.log(formdata);
 
     try {
-       await axios.post("http://localhost:8000/", formdata);
-       console.log("transaction added successfully!!!");
+       await axios.post("http://localhost:8000/user/reminders", formdata, {withCredentials: true});
+       console.log("Reminder added successfully!!!");
        setformdata({
             amount: "",
             title: "",
             type: "",
             category: "",
-            date: ""
+            reminderDate: ""
        })
-        const newdata = await axios.get("http://localhost:8000/history");
-        setTransactions(newdata);    
+        const newdata = await axios.get("http://localhost:8000/user/reminders", {withCredentials: true});
+        setReminder(newdata.data);    
     } catch (error) {
-        console.log("Error in adding transaction!! ", error);
+        console.log("Error in adding reminder!! ", error);
     }
   }
   
@@ -75,7 +91,7 @@ function Reminders() {
               </div>
 
               <div className='flex flex-col p-4 space-y-5 justify-end items-center mr-2 w-[30%] '>
-                <input type="date" name='date' onChange={handleChange} value={formdata.date} className='border-2 border-white rounded-md p-2'/>
+                <input type="date" name='reminderDate' onChange={handleChange} value={formdata.reminderDate} className='border-2 border-white rounded-md p-2'/>
                 <div className="flex justify-center border-2 border-white space-x-2 p-2 w-[60%] rounded-md">
                       {types.map((check, index) => (
                         <label

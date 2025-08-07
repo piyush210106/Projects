@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
-
+import Card from "./Card"
 function History() {
 
   let [transactions, setTransactions] = useState([]);
@@ -10,13 +10,14 @@ function History() {
   useEffect( () => {
     const fetch = async () => {
       try {
-          const res = await axios.get("http://localhost:8000/history");
+          const res = await axios.get("http://localhost:8000/user/history", {withCredentials: true});
           setTransactions(res.data);
           console.log("transactions fetched Successfully!!");
       } catch (error) {
         console.error("Error in fetching!!", error);
       }
     }
+    fetch();
   }, []);
 
   const handleChange = (e) => {

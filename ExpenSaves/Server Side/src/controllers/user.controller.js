@@ -85,7 +85,7 @@ const userLogout = async (req, res) => {
                   .status(200);
 
     } catch (error) {
-        return res.status().json({message: "User logout failed ", error}); 
+        return res.status(400).json({message: "User logout failed ", error}); 
     }
 }
 

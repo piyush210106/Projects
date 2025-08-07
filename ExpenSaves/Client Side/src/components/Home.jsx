@@ -8,6 +8,7 @@ function Home() {
   let [transactions, setTransactions] = useState([])
   let [income, setIncome] = useState();
   let [expense, setExpense] = useState();
+  let [filtered, setFiltered] = useState([]);
   let [formdata, setformdata] = useState({
     amount: "",
     title: "",
@@ -16,17 +17,15 @@ function Home() {
     type: ""
   })
 
-  let datetoday = new Date().toLocaleString();
   const options = ["Housing", "Transportation", "Food", "Health", "Entertainment", "Lifestyle", " Financial Obligations", "Miscellaneous"];
-
   const types = ["Credit", "Debit"];
 
   useEffect( () => {
       const fetchdata = async () => {
       await axios
-      .get("http://localhost:8000/history")
+      .get("http://localhost:8000/user/home", {withCredentials: true})
       .then( (res) => {
-        setTransactions(res);
+        setTransactions(res.data);
         console.log("Transactions Fetched successfully !!");
       })
       .catch( (error) => {
@@ -51,8 +50,8 @@ function Home() {
     console.log(formdata);
 
     try {
-       await axios.post("http://localhost:8000/", formdata);
-       console.log("Transaction added successfully!!!");
+       const res = await axios.post("http://localhost:8000/user/home", formdata, {withCredentials: true});
+       console.log("Transaction added successfully!!!", res.data);
        setformdata({
             amount: "",
             title: "",
@@ -60,8 +59,8 @@ function Home() {
             category: "",
             date: ""
        })
-        const newdata = await axios.get("http://localhost:8000/history");
-        setTransactions(newdata);    
+        const newdata = await axios.get("http://localhost:8000/user/home", {withCredentials:true});
+        setTransactions(newdata.data);    
     } catch (error) {
         console.log("Error in adding transaction!! ", error);
     }
@@ -70,16 +69,26 @@ function Home() {
   useEffect( () => {
       let expense = 0;
       let income = 0;
-      transactions.forEach( entry => {
-        if(entry.type == "Credit") income += entry.amount;
-        else expense += entry.amount;
+      filtered.forEach( entry => {
+        const temp = Number(entry.amount);
+        if(entry.type == "Credit") income += temp;
+        else expense += temp;
       })
-  }, [transactions])
+        setExpense(expense);
+        setIncome(income);
+  }, [filtered])
 
 
+useEffect(() => {
+  const today = new Date().toISOString().split("T")[0]; 
 
-   const filtered = transactions.filter( entry => entry.date === datetoday);
-  // setTransactions(filtered);
+  const filtered = transactions.filter(entry => {
+    const entryDate = new Date(entry.date).toISOString().split("T")[0]; 
+    return entryDate === today;
+  });
+
+  setFiltered(filtered); 
+}, [transactions]);
 
   return (
     <div className='flex flex-col spcae-y-6'>
