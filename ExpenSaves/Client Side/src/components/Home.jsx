@@ -91,7 +91,7 @@ useEffect(() => {
 }, [transactions]);
 
   return (
-    <div className='flex flex-col spcae-y-6'>
+    <div className='flex flex-col spcae-y-6  overflow-x-hidden w-[99%]'>
       
         <div className='flex flex-col px-3 space-y-4 border-2 border-white py-5 my-2 rounded-md mx-2'>
         <h2 className='text-2xl font-extrabold'>Add Transaction</h2>
@@ -152,12 +152,12 @@ useEffect(() => {
           <h2 className='text-xl font-bold'>Today's Revenue: {income}</h2>
         </div>
 
-        <div className='flex flex-col p-4 space-y-4 border-2 border-white rounded-md m-2'>
+        <div className='flex flex-col p-4 space-y-2 items-center border-2 border-white rounded-md m-2 '>
           <h2 className='text-3xl font-extrabold'>Today's Transactions:</h2>
-          <div className='flex flex-col space-y-2'></div>
+          <div className='flex flex-col space-y-2 '></div>
           <>
           {filtered.map((entry, id) => (
-            <div key={id}>
+            <div key={id} className='w-[95%]'>
               <Card
                 amount = {entry.amount}
                 title = {entry.title}

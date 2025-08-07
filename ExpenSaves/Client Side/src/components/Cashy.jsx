@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
 import axios from 'axios';
+import ReactMarkdown from "react-markdown";
 
 function Cashy() {
 
@@ -19,7 +20,8 @@ function Cashy() {
 
     try {
       const res = await axios.post("http://localhost:8000/user/cashy", {prompt}, {withCredentials: true});
-      const botMessage = { role: 'Bot', text: res.response.data};
+      console.log(res);
+      const botMessage = { role: 'Bot', text: res.data};
       setHistory((prev) => [...prev, botMessage]);
     } catch (error) {
       setHistory((prev) => [...prev, "Something went wrong while generating response"]);
@@ -31,12 +33,12 @@ function Cashy() {
 
       <h1 className='font-extrabold'>Cashy</h1>
 
-      <div className='flex flex-col space-y-2 border-2 border-white p-4 w-[70%] rounded-md'>
+      <div className='flex flex-col overflow-y-scroll h-[500px] space-y-4 border-2 border-white p-4 w-[70%] rounded-md'>
         <>
         {
            history.map((message, index) => (
-            <div key={index}>
-              <p>{message.text}</p>
+            <div key={index} className='border-2 p-2 border-white w-auto rounded-md'>
+              <ReactMarkdown>{`${message.role} :: ${message.text}`}</ReactMarkdown>
             </div>
            ))
         }
@@ -44,7 +46,7 @@ function Cashy() {
       </div>
 
       <div className='flex space-x-3'>
-        <input type="text" onChange= {handleChange} placeholder='Enter prompt' value={prompt} className='border-2 border-white p-2'/>
+        <input type="text" onChange= {handleChange} placeholder='Enter prompt' value={prompt} className='border-2 border-white p-2 rounded-lg'/>
         <button onClick={handleSubmit}>Submit</button>
       </div>
     </div>

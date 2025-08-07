@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import Card from './Card';
+import Card from "./Card"
 function Reminders() {
   let [reminder, setReminder] = useState([]);
   let [formdata, setformdata] = useState({

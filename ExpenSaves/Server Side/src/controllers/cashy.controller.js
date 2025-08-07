@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const talkCashy = async (req, res) => {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({model: "gemini"});
+    const model = genAI.getGenerativeModel({model: "gemini-2.5-flash-lite"});
 
     let chatSession = model.startChat({history: []});
     console.log(req.body.prompt);
