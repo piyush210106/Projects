@@ -15,4 +15,4 @@ const transactionRouter = Router();
  transactionRouter.route("/reminders").get(refreshTokens, getReminders);
  transactionRouter.route("/logout").get(refreshTokens, userLogout);
  transactionRouter.route("/cashy").post(refreshTokens, talkCashy);
-export default transactionRouter;
+export default transactionRouter; 
