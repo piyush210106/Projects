@@ -12,7 +12,6 @@ function History() {
       try {
           const res = await axios.get("http://localhost:8000/user/history", {withCredentials: true});
           setTransactions(res.data);
-          console.log("transactions fetched Successfully!!");
       } catch (error) {
         console.error("Error in fetching!!", error);
       }

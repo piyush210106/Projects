@@ -1,7 +1,6 @@
 import User from "../models/user.model.js"
 import Reminder from "../models/reminders.model.js"
-import jwt from "jsonwebtoken"
-
+import {addReminderToCalendar} from "../utils/Calendar.utils.js"
 
 const addReminder = async (req, res) => {
     
@@ -22,6 +21,7 @@ try {
         userid: user._id
     })
     await newreminder.save();
+    await addReminderToCalendar(req.userId, newreminder);
     return res.status(201).json({message: "Reminder added Successfully!!", newreminder});
 
 } catch (error) {

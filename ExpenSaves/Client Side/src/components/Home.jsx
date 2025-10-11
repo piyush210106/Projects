@@ -2,6 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import Card from "./Card"
 import axios from 'axios'
+import { toast } from "react-toastify";
 
 function Home() {
 
@@ -26,7 +27,6 @@ function Home() {
       .get("http://localhost:8000/user/home", {withCredentials: true})
       .then( (res) => {
         setTransactions(res.data);
-        console.log("Transactions Fetched successfully !!");
       })
       .catch( (error) => {
           console.error("Error in fetching transactions ", error);
@@ -51,7 +51,7 @@ function Home() {
 
     try {
        const res = await axios.post("http://localhost:8000/user/home", formdata, {withCredentials: true});
-       console.log("Transaction added successfully!!!", res.data);
+       toast.success("Transaction Added Successfully");
        setformdata({
             amount: "",
             title: "",
@@ -63,6 +63,7 @@ function Home() {
         setTransactions(newdata.data);    
     } catch (error) {
         console.log("Error in adding transaction!! ", error);
+        toast.error("Error in adding transaction!!");
     }
   }
 

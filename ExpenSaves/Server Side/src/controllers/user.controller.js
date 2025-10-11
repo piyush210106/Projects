@@ -12,7 +12,7 @@ passport.use(new GoogleStrategy({
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: "http://localhost:8000/auth/google/callback"
 }, 
-    async (accessToken, refreshToken, profile, next) => {
+    async (access_Token, refresh_Token, profile, next) => {
         try {
           let user = await User.findOne({google_id: profile.id});
 
@@ -21,8 +21,17 @@ passport.use(new GoogleStrategy({
                 google_id: profile.id,
                 email: profile.emails[0].value,
                 name: profile.displayName,
-                profile_pic: profile.photos[0].value
+                profile_pic: profile.photos[0].value,
+                google: {
+                    refresh_token: refresh_Token,
+                    access_token: access_Token
+                }
             });
+          }
+          else{
+            user.google.access_token = access_Token || user.google.access_token;
+            if(refresh_Token) user.google.refresh_token = refresh_Token;
+            await user.save();
           }
 
           return next(null, user);
@@ -44,13 +53,30 @@ const generateTokens = (user) => {
 }
 
 const askConsent = (req, res, next) => {
-    console.log("google route hit");
-    passport.authenticate( "google", {scope: ["profile", "email"]})(req, res, next);
+    passport.authenticate( "google", {
+            session: false,
+            scope: [
+                'profile',
+                'email',
+                'https://www.googleapis.com/auth/calendar.events'
+            ], 
+            accessType: 'offline', 
+            prompt: 'consent'
+    })(req, res, next);
     
 }
 
 const userLogin = (req, res, next) => {
-    passport.authenticate("google", {session: false},
+    passport.authenticate("google", {
+            session: false,
+            scope: [
+                'profile',
+                'email',
+                'https://www.googleapis.com/auth/calendar.events'
+            ], 
+            accessType: 'offline', 
+            prompt: 'consent'
+    },
         async (err, user) => {
         const {accessToken, refreshToken} = generateTokens(user);
 
@@ -66,7 +92,7 @@ const userLogin = (req, res, next) => {
                 httpOnly: true,
                 secure: false,
             })
-            res.redirect("http://localhost:5173/user/home");
+            .redirect("http://localhost:5173/user/home");
         }
     )(req, res, next);
 }
@@ -82,7 +108,8 @@ const userLogout = async (req, res) => {
         }
         return res.clearCookie("refreshToken")
                   .clearCookie("accessToken")
-                  .status(200);
+                  .status(200)
+                  .redirect("http://localhost:5173/");
 
     } catch (error) {
         return res.status(400).json({message: "User logout failed ", error}); 

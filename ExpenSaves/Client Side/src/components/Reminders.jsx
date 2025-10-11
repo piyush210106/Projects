@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import Card from "./Card"
+import { toast } from 'react-toastify';
 function Reminders() {
   let [reminder, setReminder] = useState([]);
   let [formdata, setformdata] = useState({
@@ -20,7 +21,6 @@ function Reminders() {
       .get("http://localhost:8000/user/reminders", {withCredentials: true})
       .then( (res) => {
         setReminder(res.data);
-        console.log("Reminders Fetched successfully !!");
       })
       .catch( (error) => {
           console.error("Error in fetching Reminders ", error);
@@ -46,7 +46,7 @@ function Reminders() {
 
     try {
        await axios.post("http://localhost:8000/user/reminders", formdata, {withCredentials: true});
-       console.log("Reminder added successfully!!!");
+       toast.success("Reminder Added Successfully");
        setformdata({
             amount: "",
             title: "",
@@ -58,6 +58,7 @@ function Reminders() {
         setReminder(newdata.data);    
     } catch (error) {
         console.log("Error in adding reminder!! ", error);
+        toast.error("Error in adding reminder!!");
     }
   }
   

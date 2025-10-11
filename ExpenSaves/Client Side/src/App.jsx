@@ -10,6 +10,8 @@ import Navbar from "./components/Navbar"
 import Reminders from "./components/Reminders"
 import Statistics from "./components/Statistics"
 import Navbar2 from './components/Navbar2'
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const router = createBrowserRouter([
   {
@@ -89,7 +91,10 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <RouterProvider router = {router}/>
+    <>
+      <ToastContainer position="top-right" autoClose={3000} />
+      <RouterProvider router = {router}/>
+    </>
   )
 }
 

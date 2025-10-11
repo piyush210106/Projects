@@ -17,15 +17,15 @@ const refreshTokens = async (req, res, next) => {
         req.userId = user._id;
         return next();
     } catch (error) {
-        if(error != "TokenExpiredError"){ 
+        if(error.name !== "TokenExpiredError"){ 
             console.log(error);
-            return res.status(400).json({message: "error", error});}
+            return res.status(400).json({message: "JWT Verify Error", error});}
     }
 
     if(!refresh_token) return res.status(401).json({message: "Refresh Token Missing"});
 
     let decoded = jwt.verify(refresh_token, process.env.REFRESH_TOKEN_SECRET);
-    let user = await user.findById(decoded.id);
+    let user = await User.findById(decoded.id);
     if(!user || refresh_token !== user.refreshToken)
         return res.status(400).json({message: "Invalid Refresh Token"});
 

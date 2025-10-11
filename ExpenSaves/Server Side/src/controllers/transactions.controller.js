@@ -7,8 +7,6 @@ const addTransaction = async (req, res) => {
 try {
     let user = await User.findById(req.userId);
     if(!user) return res.status().json({message: "Invalid User"});
-    console.log(user);
-    console.log(req.body);
     let { amount, title, category, type, date } = req.body;
     if(!amount || !title || !category || !type || !date) 
         return res.status(400).json({message: "All fields Required"});
