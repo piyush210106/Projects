@@ -10,7 +10,7 @@ function History() {
   useEffect( () => {
     const fetch = async () => {
       try {
-          const res = await axios.get("http://localhost:8000/user/history", {withCredentials: true});
+          const res = await axios.get("https://projects-zeud.onrender.com/user/history", {withCredentials: true});
           setTransactions(res.data);
       } catch (error) {
         console.error("Error in fetching!!", error);

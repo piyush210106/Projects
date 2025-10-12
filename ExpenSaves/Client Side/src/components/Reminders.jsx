@@ -18,7 +18,7 @@ function Reminders() {
     useEffect( () => {
       const fetchreminders = async () => {
       await axios
-      .get("http://localhost:8000/user/reminders", {withCredentials: true})
+      .get("https://projects-zeud.onrender.com/user/reminders", {withCredentials: true})
       .then( (res) => {
         setReminder(res.data);
       })
@@ -45,7 +45,7 @@ function Reminders() {
     console.log(formdata);
 
     try {
-       await axios.post("http://localhost:8000/user/reminders", formdata, {withCredentials: true});
+       await axios.post("https://projects-zeud.onrender.com/user/reminders", formdata, {withCredentials: true});
        toast.success("Reminder Added Successfully");
        setformdata({
             amount: "",
@@ -54,7 +54,7 @@ function Reminders() {
             category: "",
             reminderDate: ""
        })
-        const newdata = await axios.get("http://localhost:8000/user/reminders", {withCredentials: true});
+        const newdata = await axios.get("https://projects-zeud.onrender.com/user/reminders", {withCredentials: true});
         setReminder(newdata.data);    
     } catch (error) {
         console.log("Error in adding reminder!! ", error);

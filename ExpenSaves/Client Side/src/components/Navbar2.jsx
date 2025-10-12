@@ -3,7 +3,7 @@ import React from 'react'
 export default function Navbar2() {
 
   const handleLogin = () => {
-    window.location.href = "http://localhost:8000/auth/google";
+    window.location.href = "https://projects-zeud.onrender.com/auth/google";
   };
 
   return (

@@ -24,7 +24,7 @@ function Home() {
   useEffect( () => {
       const fetchdata = async () => {
       await axios
-      .get("http://localhost:8000/user/home", {withCredentials: true})
+      .get("https://projects-zeud.onrender.com/user/home", {withCredentials: true})
       .then( (res) => {
         setTransactions(res.data);
       })
@@ -50,7 +50,7 @@ function Home() {
     console.log(formdata);
 
     try {
-       const res = await axios.post("http://localhost:8000/user/home", formdata, {withCredentials: true});
+       const res = await axios.post("https://projects-zeud.onrender.com/user/home", formdata, {withCredentials: true});
        toast.success("Transaction Added Successfully");
        setformdata({
             amount: "",
@@ -59,7 +59,7 @@ function Home() {
             category: "",
             date: ""
        })
-        const newdata = await axios.get("http://localhost:8000/user/home", {withCredentials:true});
+        const newdata = await axios.get("https://projects-zeud.onrender.com/user/home", {withCredentials:true});
         setTransactions(newdata.data);    
     } catch (error) {
         console.log("Error in adding transaction!! ", error);

@@ -18,7 +18,7 @@ function Cashy() {
 
     try {
       const res = await axios.post(
-        "http://localhost:8000/user/cashy",
+        "https://projects-zeud.onrender.com/user/cashy",
         { prompt },
         { withCredentials: true }
       );

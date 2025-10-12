@@ -9,7 +9,7 @@ const getGoogleClient = async(userId) => {
     const oAuth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
-    "http://localhost:8000/auth/google/callback"
+    "https://projects-zeud.onrender.com/auth/google/callback"
     );
 
     oAuth2Client.setCredentials({
