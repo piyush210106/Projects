@@ -87,10 +87,12 @@ const userLogin = (req, res, next) => {
             .cookie("refreshToken", refreshToken, {
                 httpOnly: true,
                 secure: false,
+                sameSite: "none"
             })
             .cookie("accessToken", accessToken, {
                 httpOnly: true,
                 secure: false,
+                sameSite: "none"
             })
             .redirect("http://localhost:5173/user/home");
         }

@@ -33,8 +33,8 @@ const refreshTokens = async (req, res, next) => {
     user.refreshToken = newRefreshToken;
     await user.save();
 
-    res.cookie("accessToken", newAccessToken, { httpOnly: true, secure: false });
-    res.cookie("refreshToken", newRefreshToken, { httpOnly: true, secure: false });
+    res.cookie("accessToken", newAccessToken, { httpOnly: true, secure: false,sameSite: "none" });
+    res.cookie("refreshToken", newRefreshToken, { httpOnly: true, secure: false, sameSite: "none" });
 
     req.userId = user._id;
     next();
