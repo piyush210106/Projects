@@ -86,15 +86,15 @@ const userLogin = (req, res, next) => {
             res
             .cookie("refreshToken", refreshToken, {
                 httpOnly: true,
-                secure: false,
+                secure: true,
                 sameSite: "none"
             })
             .cookie("accessToken", accessToken, {
                 httpOnly: true,
-                secure: false,
+                secure: true,
                 sameSite: "none"
             })
-            .redirect("http://localhost:5173/user/home");
+            .redirect("https://expensaves-frontend.onrender.com/user/home");
         }
     )(req, res, next);
 }
@@ -111,7 +111,7 @@ const userLogout = async (req, res) => {
         return res.clearCookie("refreshToken")
                   .clearCookie("accessToken")
                   .status(200)
-                  .redirect("http://localhost:5173/");
+                  .redirect("https://expensaves-frontend.onrender.com");
 
     } catch (error) {
         return res.status(400).json({message: "User logout failed ", error}); 
