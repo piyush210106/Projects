@@ -7,7 +7,7 @@ import transactionRouter from "./routes/transaction.route.js";
 
 const app = express();
 const corsOptions = {
-  origin: "https://expensaves-frontend.onrender.com",  
+  origin: "https://projects-ruddy-theta.vercel.app/",  
   credentials: true
 };
 app.use(cookieParser());

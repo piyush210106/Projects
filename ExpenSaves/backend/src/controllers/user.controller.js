@@ -94,7 +94,7 @@ const userLogin = (req, res, next) => {
                 secure: true,
                 sameSite: "none"
             })
-            .redirect("https://expensaves-frontend.onrender.com/user/home");
+            .redirect("https://projects-ruddy-theta.vercel.app//user/home");
         }
     )(req, res, next);
 }
@@ -111,7 +111,7 @@ const userLogout = async (req, res) => {
         return res.clearCookie("refreshToken")
                   .clearCookie("accessToken")
                   .status(200)
-                  .redirect("https://expensaves-frontend.onrender.com");
+                  .redirect("https://projects-ruddy-theta.vercel.app/");
 
     } catch (error) {
         return res.status(400).json({message: "User logout failed ", error}); 
