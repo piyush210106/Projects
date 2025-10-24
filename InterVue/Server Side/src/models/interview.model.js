@@ -1,17 +1,17 @@
 import mongoose from "mongoose";
 
 const interviewSchema = new mongoose.Schema({
-  applicationId: {
+  application: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Application",
     required: true,
   },
-  candidateId: {
+  candidate: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User", // user with role = "candidate"
     required: true,
   },
-  recruiterId: {
+  recruiter: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User", // user with role = "recruiter"
     required: true,

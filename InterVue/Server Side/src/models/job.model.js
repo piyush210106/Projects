@@ -17,12 +17,9 @@ const jobSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    source: {               // "internal" | "external"
+    source: {               // "internal" | "LinkedIn" | "Naukri"
         type: String,
         required: true
-    },
-    apisource: {            // "LinkedIn", "Indeed", "Naukri"
-        type: String || null
     },
     description: {
         type: String,

@@ -16,7 +16,8 @@ const userSchema = new mongoose.Schema({
     },
     role: {                 // Candidate | Recruiter
         type: String,
-        required: true
+        enum:["Candidate", "Recruiter"],
+        default: null
     },
     linkedIn: {
         type: String,

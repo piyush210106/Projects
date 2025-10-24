@@ -12,13 +12,24 @@ import Resume from './RecruiterPages/Resume.jsx';
 import NavRec from './RecruiterPages/NavRec.jsx';
 import Footer from './Components/Footer.jsx';
 import Landing from './Components/Landing.jsx';
-
+import Navbar from './Components/Navbar.jsx';
+import Login from './Components/Login.jsx';
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
       <div>
+          <Navbar/>
           <Landing/>
+          <Footer/>
+        </div>
+    )
+  },
+  {
+    path: "/login",
+    element: (
+      <div>
+          <Login/>
           <Footer/>
         </div>
     )
