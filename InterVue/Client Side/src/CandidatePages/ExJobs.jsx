@@ -1,13 +1,20 @@
-import React from 'react'
-import JobCard from '../Components/JobCard.jsx'
+import React from 'react';
+import axios from 'axios';
+import JobCard from '../Components/JobCard.jsx';
+import useCandidateStore from '../Stores/CandidateStore.js';
+import { useEffect } from 'react';
+
 function ExJobs() {
+  const {exjobs, addexjob} = useCandidateStore();
+  useEffect(() => {
+    addexjob()
+  }, [addexjob]);
+
   return (
     <div className='flex flex-col space-y-2 justify-center items-center'>
-      <JobCard></JobCard>
-      <JobCard></JobCard>
-      <JobCard></JobCard>
-      <JobCard></JobCard>
-      <JobCard></JobCard>
+      {exjobs.map((job) => (
+        <JobCard key={job.id} job={job}/>
+      ))}
     </div>
   )
 }

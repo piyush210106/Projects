@@ -34,7 +34,15 @@ const jobSchema = new mongoose.Schema({
     },
     url: {
         type: String || null
-    }
+    },
+    salary: {
+        type: String,
+        required: true
+    },
+    recruiter: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+     },
 }, {timestamps: true});
 
 const Job = mongoose.model("Job", jobSchema);

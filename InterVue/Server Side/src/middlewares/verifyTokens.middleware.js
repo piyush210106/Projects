@@ -21,16 +21,16 @@ const verifyTokens = async (req, res, next) => {
             return res.status(403).json({ message: "Invalid access token" });
             }
         }
-         if(!refreshToken){
+         if(!refresh){
             return res.status(401).json({ message: "No refresh token" });
         }
         try {
             let decoded = jwt.verify(refresh, process.env.REFRESH_TOKEN_SECRET);
             let user = await User.findById(decoded.id);
-            if(!user || refreshToken !== user.refreshtoken)
+            if(!user || refresh !== user.refreshtoken)
                 return res.status(400).json({message: "Invalid Refresh Token"});
             
-            const {newAccesstoken, newRefreshToken} = generateTokens(user);
+            const {access_token: nnewAccesstoken,refresh_token: newRefreshToken} = generateTokens(user);
             user.refreshtoken = newRefreshToken;
             await user.save();
 

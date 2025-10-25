@@ -4,8 +4,8 @@ import { upload } from "../utils/uploadResume.util.js";
 
 const authRouter = Router();
 
-authRouter.get("/google", askConsent);
-authRouter.get("/google/callback", userLogin);
+authRouter.get("/auth/google", askConsent);
+authRouter.get("/auth/google/callback", userLogin);
 authRouter.post("/login", upload.single("resume"), completeOnboarding);
 
 export {authRouter};

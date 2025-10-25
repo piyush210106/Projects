@@ -4,7 +4,6 @@ const userSchema = new mongoose.Schema({
     google: {
         google_id: {type: String, required: true},
         googleRefresh_token: {type: String},
-        googleAccess_token: {type: String}
     },
     name: {
         type: String,
@@ -21,7 +20,6 @@ const userSchema = new mongoose.Schema({
     },
     linkedIn: {
         type: String,
-        required: true
     },
     resumeURL: {
         type: String,

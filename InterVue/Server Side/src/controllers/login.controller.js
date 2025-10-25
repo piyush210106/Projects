@@ -13,23 +13,24 @@ passport.use(
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         callbackURL: process.env.GOOGLE_CALLBACK_URL
     },
-    async(accessToken, refreshToken, profile, done) => {
+    async(accessToken, refreshToken, profile, next) => {
+        console.log("access token!!" ,accessToken);
+        console.log("refresh token !!", refreshToken);
+
         try {
-            let user = User.findOne({"google.google_id": profile.id})
+            let user = await User.findOne({"google.google_id": profile.id})
             if(!user){
-                user = new User.create({
+                user = new User({
                     name: profile.displayName,
                     email: profile.emails?.[0]?.value,
                     avatar: profile.photos?.[0]?.value,
                     google: {
                         google_id: profile.id,
                         googleRefresh_token: refreshToken,
-                        googleAccess_token: accessToken
                     }
                 })
             }
             else{
-                user.google.googleAccess_token = accessToken;
                 user.google.googleRefresh_token = refreshToken;
                 await user.save();
             }
@@ -50,6 +51,7 @@ const generateTokens = (user) => {
 }
 
 const askConsent = (req, res, next) => {
+    console.log("google hitt");
     passport.authenticate( "google", {
             session: false,
             scope: [
@@ -75,7 +77,7 @@ const userLogin = (req, res, next) => {
     },
         async (err, user, info) => {
             if(err) return next(err, null);
-            if(!user){
+            if(user.role == null){
                 const tempToken = jwt.sign(
                 { googleProfile: info.profile },
                 process.env.ACCESS_TOKEN_SECRET,
@@ -117,17 +119,18 @@ const userLogin = (req, res, next) => {
 }
 
 const completeOnboarding = async (req, res) => {
-  const { role, resumeUrl, linkedin } = req.body;
-  const { tempToken } = req.cookies;
+    console.log("Onboarding hit");
+    const { tempToken } = req.cookies;
+    
+    if (!tempToken) return res.status(401).json({ message: "No temp token" });
+    
+    try {
+        const decoded = jwt.verify(tempToken, process.env.ACCESS_TOKEN_SECRET);
+        const profile = decoded.googleProfile;
+        const { role, linkedin } = req.body;
+        const resumeUrl = req.file?.path || null;
 
-  if (!tempToken) return res.status(401).json({ message: "No temp token" });
-
-  try {
-    const decoded = jwt.verify(tempToken, process.env.ACCESS_TOKEN_SECRET);
-    const profile = decoded.googleProfile;
-    const resumeUrl = req.file?.path || null;
-
-    const newUser = await User.create({
+    const newUser = await User({
       name: profile.displayName,
       email: profile.emails[0].value,
       avatar: profile.photos[0].value,
@@ -136,14 +139,12 @@ const completeOnboarding = async (req, res) => {
       linkedin,
       google: { 
         google_id: profile.id,
-        googleAccess_token: profile.accessToken,
         googleRefresh_token: profile.refreshToken
     },
     });
 
     const { accessToken, refreshToken } = generateTokens(newUser);
-    newUser.google.googleAccess_token = accessToken;
-    newUser.google.googleRefresh_token = refreshToken;
+    newUser.refreshtoken = refreshToken;
     await newUser.save();
 
     res

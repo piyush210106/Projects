@@ -21,7 +21,7 @@ const getexjobs = async (req, res) => {
 
 const getinjobs = async (req, res) => {
     try {
-        const injobs = await Job.find({source: "Internal"});
+        const injobs = await Job.find();
         return res.status(200).json(injobs);
     } catch (error) {
         console.error("Error in getting injobs ", error);

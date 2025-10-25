@@ -20,7 +20,6 @@ const applicationSchema = new mongoose.Schema(
     },
     source: {
       type: String,
-      enum: ["internal", "external"],
       required: true,
     },
   },
