@@ -22,6 +22,8 @@ const applicationSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    rating: String,
+    feedback: String
   },
   { timestamps: true }
 );

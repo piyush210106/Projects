@@ -3,14 +3,18 @@ import mongoose from "mongoose";
 const resumeSchema = new mongoose.Schema({
     candidate: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User", // reference to candidate user model
+    ref: "User", 
     required: true,
   },
     fileUrl: {
-        type: String, // URL to cloud storage
+        type: String, 
         required: true,
     },
     fileName: String,
+    rawData: {
+        type: String, 
+        required: true
+    },
     parsedData: {
         name: String,
         email: String,
@@ -31,6 +35,13 @@ const resumeSchema = new mongoose.Schema({
             year: String,
         },
         ],
+        projects: [
+            {
+                title: String,
+                description: String,
+                technologies: [String], 
+            }
+        ]
     }
 }, {timestamps: true});
 

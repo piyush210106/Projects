@@ -3,6 +3,9 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import User from "../models/user.model.js";
+import Resume from "../models/resume.model.js";
+import { parseResume } from "../utils/parseResume.util.js";
+
 dotenv.config({
     path: "./.env"
 });
@@ -128,20 +131,31 @@ const completeOnboarding = async (req, res) => {
         const decoded = jwt.verify(tempToken, process.env.ACCESS_TOKEN_SECRET);
         const profile = decoded.googleProfile;
         const { role, linkedin } = req.body;
-        const resumeUrl = req.file?.path || null;
+        const resumeURL = req.file?.path || null;
 
     const newUser = await User({
       name: profile.displayName,
       email: profile.emails[0].value,
       avatar: profile.photos[0].value,
       role,
-      resumeUrl,
       linkedin,
       google: { 
         google_id: profile.id,
         googleRefresh_token: profile.refreshToken
     },
     });
+    
+    if (resumeURL) {
+      let {parsed, text} = await parseResume(resumeURL);
+      const resume = await Resume.create({
+        candidate: newUser._id,
+        fileUrl: resumeURL,
+        fileName: "resume.pdf",
+        text,
+        parsed
+      });
+      newUser.resume = resume._id; 
+    }
 
     const { accessToken, refreshToken } = generateTokens(newUser);
     newUser.refreshtoken = refreshToken;

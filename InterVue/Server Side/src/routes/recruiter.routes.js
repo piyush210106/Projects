@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { verifyTokens } from "../middlewares/verifyTokens.middleware.js";
+import { addjob, getappliedCandidates } from "../controllers/recruiter.controller.js";
 const recrouter = Router();
 
-recrouter.route("/addjobs").post(verifyTokens);
-recrouter.route("/appliedcans").get(verifyTokens);
+recrouter.route("/addjobs").post(verifyTokens, addjob);
+recrouter.route("/appliedcans").get(verifyTokens, getappliedCandidates);
 recrouter.route("/chatbot").post(verifyTokens);
-recrouter.route("/resume").get(verifyTokens);
 
 export { recrouter };

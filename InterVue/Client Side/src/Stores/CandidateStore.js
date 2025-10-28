@@ -6,7 +6,8 @@ const useCandidateStore = create((set) => ({
     injobs: [],
     selectedjobs: [],
     meetings: [],
-    addexjob : async () => {
+    appliedjobs: [],
+    addexjob : async (set) => {
         try {
             const res = await axios.get("http://localhost:8000/candidate/exjobs", {withCredentials:true});
             set({exjobs: res.data});
@@ -14,7 +15,7 @@ const useCandidateStore = create((set) => ({
             set({error: error.message});
         }
     },
-    addinjob : async () => {
+    addinjob : async (set) => {
         try {
             const res = await axios.get("http://localhost:8000/candidate/injobs", {withCredentials:true});
             set({injobs: res.data});
@@ -36,6 +37,14 @@ const useCandidateStore = create((set) => ({
         set( (state) => ({
             meetings: [meeting, ...state.meetings]
         }))
+    },
+    fetchappliedjobs: async(set) => {
+        try {
+            const res = await axios.get("http://localhost:8000/candidate/appliedjobs", {withCredentials: true});
+            set({appliedjobs: res.data});
+        } catch (error) {
+            console.log("Error in fetching applied jobs!!", error);
+        }
     }
 }));
 

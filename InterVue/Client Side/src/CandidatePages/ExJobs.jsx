@@ -8,12 +8,12 @@ function ExJobs() {
   const {exjobs, addexjob} = useCandidateStore();
   useEffect(() => {
     addexjob()
-  }, [addexjob]);
+  }, []);
 
   return (
     <div className='flex flex-col space-y-2 justify-center items-center'>
       {exjobs.map((job) => (
-        <JobCard key={job.id} job={job}/>
+        <JobCard key={job.id || job._id} job={job}/>
       ))}
     </div>
   )

@@ -30,12 +30,10 @@ const getinjobs = async (req, res) => {
 
 const getappliedjobs = async (req, res) => {
     try {
-
         const user = await User.findById(req.userId);
         if(!user) return res.status(400).json({message: "Error in finding user"});
         const appliedjobs = await Application.find({user: req.userId}).populate("User").populate("Job");
         return res.status(200).json(appliedjobs);
-
     } catch (error) {
         console.log("Error in finding applied jobs ", error);
     }
@@ -43,12 +41,10 @@ const getappliedjobs = async (req, res) => {
 
 const getselectedjobs = async (req, res) => {
     try {
-
         const user = await User.findById(req.userId);
         if(!user) return res.status(400).json({message: "Error in finding user"});
         const appliedjobs = await Application.find({user: req.userId, status: "selected_to_apply"}).populate("User").populate("Job");
         return res.status(200).json(appliedjobs);
-
     } catch (error) {
         console.log("Error in finding selected jobs ", error);
     }

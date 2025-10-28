@@ -9,6 +9,7 @@ function NavRec() {
           <NavLink to="/recruiter/appliedcans" className='border-2 border-black p-2 rounded-lg'>Applied Candidates</NavLink>
           <NavLink to="/recruiter/chatbot" className='border-2 border-black p-2 rounded-lg'>Chatbot</NavLink>
           <NavLink to="/recruiter/resume" className='border-2 border-black p-2 rounded-lg'>Resume</NavLink>
+          <NavLink to="/" className='border-2 border-black p-2 rounded-lg'>LogOut</NavLink>
         </div>
 
     </div>

@@ -14,6 +14,7 @@ import Footer from './Components/Footer.jsx';
 import Landing from './Components/Landing.jsx';
 import Navbar from './Components/Navbar.jsx';
 import Login from './Components/Login.jsx';
+import VideoInterview from './Components/Interview.jsx';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -123,7 +124,18 @@ const router = createBrowserRouter([
           <Footer/>
         </div>
     )
+  },
+    {
+    path: "/recruiter/interview",
+    element: (
+        <div>
+          <NavRec/>
+          <VideoInterview/>
+          <Footer/>
+        </div>
+    )
   }
+
 ]);
 
 function App() {

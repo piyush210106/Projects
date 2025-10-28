@@ -21,8 +21,10 @@ const userSchema = new mongoose.Schema({
     linkedIn: {
         type: String,
     },
-    resumeURL: {
-        type: String,
+    resume: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Resume",
+        required: true
     },
     refreshtoken: {
         type: String,

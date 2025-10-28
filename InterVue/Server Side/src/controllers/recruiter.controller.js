@@ -1,7 +1,8 @@
 import Application from "../models/application.model.js";
 import Job from "../models/job.model.js";
 import User from "../models/user.model.js"
-import Job from "../models/job.model.js";
+import { rankApplicants } from "../utils/ApplicantRanking.util.js";
+
 const addjob = async (req, res) => {
     try {
         let recruiter = await User.findById(req.userId);
@@ -29,14 +30,31 @@ const addjob = async (req, res) => {
 }
 
 const getappliedCandidates = async(req, res) => {
-    const recruiterId = req.userId;
+    try {
+        const recruiterId = req.userId;
 
-    const jobs = await Job.find({recruiter: recruiterId}).select("_id");
+        const jobs = await Job.find({recruiter: recruiterId}).select("_id");
 
-    const jobsId = jobs.map((job) => job._id);
+        const jobsId = jobs.map((job) => job._id);
+        let results = [];
+        for(const job of jobsId){
+            const ranked = await rankApplicants(job._id);
+            if(ranked && ranked.length){
+                results.push({
+                    job,
+                    ranked
+                })
+            }
+        } 
 
-    const applications = await Application.find({job: { $in: jobIds }}).populate("User").populate("Job");
-    return res.status(applications);
+        return res.status(200).json(results);
+
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json(error);
+    }
 }
+
+export {addjob, getappliedCandidates};
 
 

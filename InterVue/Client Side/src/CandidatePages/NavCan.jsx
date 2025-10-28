@@ -11,6 +11,7 @@ function NavCan() {
           <NavLink to="/candidate/selectedjobs" className='border-2 border-black p-2 rounded-lg'>Selected Jobs</NavLink>
           <NavLink to="/candidate/meetings" className='border-2 border-black p-2 rounded-lg'>Meetings</NavLink>
           <NavLink to="/candidate/appliedjobs" className='border-2 border-black p-2 rounded-lg'>Applied Jobs</NavLink>
+          <NavLink to="/" className='border-2 border-black p-2 rounded-lg'>LogOut</NavLink>
         </div>
     </div>
   )
