@@ -11,12 +11,17 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary,
   params: async (req, file) => {
-    
     return {
-      folder: "resumes", // folder name in Cloudinary
-      resource_type: "auto", // auto-detect file type
-      format: file.originalname.split(".").pop(), // preserve file extension
+      folder: "resume",
+      resource_type: "raw",
+      format: file.originalname.split(".").pop(),
       public_id: `${Date.now()}-${file.originalname.split(".")[0]}`,
+      // Remove access_mode and type - use access_control instead
+      access_control: [
+        {
+          access_type: "anonymous", // This makes it publicly accessible
+        }
+      ],
     };
   },
 });

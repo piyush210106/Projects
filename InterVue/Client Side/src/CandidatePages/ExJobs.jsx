@@ -5,7 +5,9 @@ import useCandidateStore from '../Stores/CandidateStore.js';
 import { useEffect } from 'react';
 
 function ExJobs() {
-  const {exjobs, addexjob} = useCandidateStore();
+  const exjobs = useCandidateStore((state) => state.exjobs);
+  const addexjob = useCandidateStore((state) => state.addexjob);  
+  
   useEffect(() => {
     addexjob()
   }, []);

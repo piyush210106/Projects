@@ -1,86 +1,74 @@
 import axios from "axios";
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const pdf = require("pdf-parse");import { StructuredOutputParser } from "@langchain/core/output_parsers";
-import { z } from "zod";
-import { InferenceClient } from "@huggingface/inference";
-const resumeSchema = z.object({
-    name: z.string().optional(),
-    email: z.string().optional(),
-    phone: z.string().optional(),
-    skills: z.array(z.string()).optional(),
-    experience: z
-    .array(
-      z.object({
-        company: z.string().optional(),
-        role: z.string().optional(),
-        duration: z.string().optional(),
-        description: z.string().optional(),
-      })
-    )
-    .optional(),
-    education: z
-    .array(
-      z.object({
-        institution: z.string().optional(),
-        degree: z.string().optional(),
-        year: z.string().optional(),
-      })
-    )
-    .optional(),
-    projects: z
-    .array(
-      z.object({
-        title: z.string().optional(),
-        description: z.string().optional(),
-        technologies: z.array(z.string()).optional(),
-        link: z.string().optional(),
-        duration: z.string().optional(),
-      })
-    )
-    .optional()
-});
-
-const parser = StructuredOutputParser.fromZodSchema(resumeSchema);
-const model = new InferenceClient({
-  model: "mistralai/Mixtral-8x7B-Instruct-v0.1", 
-  apiKey: process.env.HUGGINGFACE_API_KEY,
-  temperature: 0.2,
-});
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const parseResume = async(fileURL) => {
-    try {
-        const res = await axios.get(fileURL, {responseType: "arraybuffer"});
-        const buffer = res.data;
+  try {
+    const res = await axios.get(fileURL, {responseType: "arraybuffer"});
+    const pdfBytes = Buffer.from(res.data).toString('base64');
 
-        let text = "";
-        const pdfData = await pdf(buffer);
-        text = pdfData.text;
+    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+    const model = genAI.getGenerativeModel({model: "gemini-2.5-flash-lite"});
 
-        const prompt = `
-            Extract the following details from this resume and return them as JSON:
-            - name, email, phone
-            - skills (list)
-            - education (institution, degree, year)
-            - experience (company, role, duration, description)
-            - projects (title, description, technologies, link, duration)
-            
-            Resume text:
-            """${text}"""
-            `;
+    const prompt = `
+      You are a resume parsing assistant.
 
-        const rawResponse = await model.invoke(prompt);
-        try {
-                const parsed = await parser.parse(rawResponse);
-                return {parsed, text};
-        } catch {
-                const jsonStr = rawResponse.match(/\{[\s\S]*\}/)?.[0];
-                return JSON.parse(jsonStr || "{}");
-        }
-    } catch (error) {
-        console.log("Error in parsing resume!!", error);
-    }
+      Step 1: Extract all readable text from this resume PDF.
+      Step 2: From that text, create a structured JSON object in the following format.
 
+      {
+        "name": "string",
+        "email": "string",
+        "phone": "string",
+        "skills": ["skill1", "skill2"],
+        "experience": [
+          {"company": "string", "role": "string", "duration": "string", "description": "string"}
+        ],
+        "education": [
+          {"institution": "string", "degree": "string", "year": "string"}
+        ],
+        "projects": [
+          {"title": "string", "description": "string", "technologies": ["tech1", "tech2"], "link": "string", "duration": "string"}
+        ]
+      }
+
+      ⚠️ Output format (strictly follow this structure):
+      {
+        "text": "raw extracted text from resume",
+        "structured": { <structured JSON as above> }
+      }
+
+      Return ONLY this JSON object — no markdown, no code fences, no comments.
+    `;
+
+    const result = await model.generateContent([
+      { text: prompt },
+      {
+        inlineData: {
+          mimeType: "application/pdf",
+          data: pdfBytes,
+        },
+      },
+    ]);
+
+    const response = result.response.text().trim();
+    const cleaned = response
+      .replace(/```json\s*/g, "")
+      .replace(/```\s*/g, "")
+      .trim();
+
+    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("Gemini did not return valid JSON");
+
+    const parsed = JSON.parse(jsonMatch[0]);
+
+    return {
+      text: parsed.text || "",
+      structured: parsed.structured || {},
+    };
+
+  } catch (error) {
+    console.log("Error in parsing resume!! ", error);
+  }
 }
 
 export {parseResume};

@@ -30,7 +30,7 @@ const verifyTokens = async (req, res, next) => {
             if(!user || refresh !== user.refreshtoken)
                 return res.status(400).json({message: "Invalid Refresh Token"});
             
-            const {access_token: nnewAccesstoken,refresh_token: newRefreshToken} = generateTokens(user);
+            const {access_token: newAccesstoken,refresh_token: newRefreshToken} = generateTokens(user);
             user.refreshtoken = newRefreshToken;
             await user.save();
 

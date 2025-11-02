@@ -5,17 +5,25 @@ import Interview from "../models/interview.model.js";
 import axios from "axios";
 
 const getexjobs = async (req, res) => {
-    const options = {
-        method: 'POST',
-        url: 'https://api.theirstack.com/v1/jobs/search',
-        headers: {'Content-Type': 'application/json', Authorization: `Bearer ${process.env.THEIRSTACK_API_KEY}`},
-        data: {page: 0, limit: 25, job_country_code_or: ['US'], posted_at_max_age_days: 20, "job_title_or": ["software engineer", "data scientist"]}
-    };
+    
     try {
+        const options = {
+            method: 'GET',
+            url: 'https://api.adzuna.com/v1/api/jobs/us/search/1',
+            params: {
+                app_id: process.env.ADZUNA_API_ID,
+                app_key: process.env.ADZUNA_API_KEY,
+                results_per_page: 25,
+                what: 'software engineer', 
+                max_days_old: 20,
+                'content-type': 'application/json' 
+            }
+        }; 
+        
         const { data } = await axios.request(options);
-        return res.json(data);
+        return res.status(200).json(data);
     } catch (error) {
-        console.error(error);
+        console.error("Error in getting exjobs!! ", error);
     }
 }
 

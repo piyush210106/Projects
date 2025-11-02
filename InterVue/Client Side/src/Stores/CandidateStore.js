@@ -7,7 +7,8 @@ const useCandidateStore = create((set) => ({
     selectedjobs: [],
     meetings: [],
     appliedjobs: [],
-    addexjob : async (set) => {
+    error: null,
+    addexjob : async () => {
         try {
             const res = await axios.get("http://localhost:8000/candidate/exjobs", {withCredentials:true});
             set({exjobs: res.data});
@@ -15,7 +16,7 @@ const useCandidateStore = create((set) => ({
             set({error: error.message});
         }
     },
-    addinjob : async (set) => {
+    addinjob : async () => {
         try {
             const res = await axios.get("http://localhost:8000/candidate/injobs", {withCredentials:true});
             set({injobs: res.data});
@@ -38,7 +39,7 @@ const useCandidateStore = create((set) => ({
             meetings: [meeting, ...state.meetings]
         }))
     },
-    fetchappliedjobs: async(set) => {
+    fetchappliedjobs: async() => {
         try {
             const res = await axios.get("http://localhost:8000/candidate/appliedjobs", {withCredentials: true});
             set({appliedjobs: res.data});

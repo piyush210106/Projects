@@ -17,8 +17,6 @@ passport.use(
         callbackURL: process.env.GOOGLE_CALLBACK_URL
     },
     async(accessToken, refreshToken, profile, next) => {
-        console.log("access token!!" ,accessToken);
-        console.log("refresh token !!", refreshToken);
 
         try {
             let user = await User.findOne({"google.google_id": profile.id})
@@ -82,7 +80,7 @@ const userLogin = (req, res, next) => {
             if(err) return next(err, null);
             if(user.role == null){
                 const tempToken = jwt.sign(
-                { googleProfile: info.profile },
+                { googleProfile: user },
                 process.env.ACCESS_TOKEN_SECRET,
                 { expiresIn: "10m" }
             );
@@ -130,47 +128,43 @@ const completeOnboarding = async (req, res) => {
     try {
         const decoded = jwt.verify(tempToken, process.env.ACCESS_TOKEN_SECRET);
         const profile = decoded.googleProfile;
+        const user = await User.findById(profile._id);
+        if(!user) return res.status(400).json({message: "User not found!!"});
         const { role, linkedin } = req.body;
-        const resumeURL = req.file?.path || null;
-
-    const newUser = await User({
-      name: profile.displayName,
-      email: profile.emails[0].value,
-      avatar: profile.photos[0].value,
-      role,
-      linkedin,
-      google: { 
-        google_id: profile.id,
-        googleRefresh_token: profile.refreshToken
-    },
-    });
-    
+        const resumeURL = req.file?.path;
+        
+        user.role = role;
+        user.linkedIn = linkedin;
     if (resumeURL) {
-      let {parsed, text} = await parseResume(resumeURL);
-      const resume = await Resume.create({
-        candidate: newUser._id,
+      let {text, structured} = await parseResume(resumeURL);
+      const resume = new Resume({
+        candidate: user._id,
         fileUrl: resumeURL,
         fileName: "resume.pdf",
         text,
-        parsed
+        structured
       });
-      newUser.resume = resume._id; 
+      user.resume = resume._id; 
+      await resume.save();
     }
 
-    const { accessToken, refreshToken } = generateTokens(newUser);
-    newUser.refreshtoken = refreshToken;
-    await newUser.save();
+    const { access_token, refresh_token } = generateTokens(user);
+    user.refreshtoken = refresh_token;
+    await user.save();
 
-    res
-      .cookie("accessToken", accessToken, { httpOnly: true })
-      .cookie("refreshToken", refreshToken, { httpOnly: true })
-      .json({ user: newUser });
-      if (newUser.role === "Candidate") {
-      return res.redirect("http://localhost:5173/candidate/exjobs");
-    } else if (newUser.role === "Recruiter") {
-      return res.redirect("http://localhost:5173/recruiter/dashboard");
-    }
+    const redirectUrl = user.role === "Candidate" 
+      ? "/candidate/exjobs"
+      : "/recruiter/addjobs";
+     return res
+      .cookie("accessToken", access_token, { httpOnly: true })
+      .cookie("refreshToken", refresh_token, { httpOnly: true })
+      .json({ 
+        success: true,
+        user: user,
+        redirectUrl: redirectUrl
+      });
   } catch (err) {
+    console.log("Onboarding error ",err);
     res.status(400).json({ message: "Invalid or expired token" });
   }
 };

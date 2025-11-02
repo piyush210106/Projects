@@ -19,16 +19,16 @@ function JobCard({job}) {
   return (
     <div className='flex border-2 text-lg border-black rounded-lg w-[90%] bg-slate-500 space-x-3 p-3'>
         <div className='flex flex-col space-y-4 w-[25%] p-3 text-xl font-bold'>
-            <p>{job.job_title || job.title}</p>
-            <p>{job.company}</p>
-            <p>{job.location}</p>
-            <p>{job.employment_statuses || job.type}</p>
+            <p>{job.title}</p>
+            <p>{job.company.display_name || job.company}</p>
+            <p>{job.area.display_name || job.location}</p>
+            <p>{null || job.type}</p>
         </div>
         <div className='flex flex-col space-y-4 w-[25%]  p-3'>
             <p>Source</p>
-            <p>{job.salary_string || job.salary}</p>
-            <p>{job.technology_slugs || job.requirements}</p>
-            <NavLink to={job.source_url || null}>Link</NavLink>
+            <p>{job.salary_min || job.salary}</p>
+            <p>{null || job.requirements}</p>
+            <NavLink to={job.redirect_url || null}>Link</NavLink>
         </div>
         <div className='flex flex-col space-y-4 w-[50%]  p-3'>
             <textarea>{job.description}</textarea>

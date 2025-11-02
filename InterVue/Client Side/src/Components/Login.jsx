@@ -31,6 +31,9 @@ function Login() {
           withCredentials: true
         });
           console.log(res.data);
+          if(res.data.redirectUrl){
+            window.location.href = res.data.redirectUrl;
+          }
     } catch (error) {
         console.log("Error in submitting onboarding form!!", error);
     }
@@ -48,7 +51,7 @@ function Login() {
             <button className='border-2 border-black p-3 rounded-lg cursor-pointer' name='role' value="Recruiter" onClick={handleChange}>Recruiter</button>
           </div>
           <h3 className='font-bold'>Upload Resume: </h3>
-          <input type="file" accept='.pdf' className='border-2 border-black p-3 rounded-lg cursor-pointer' onChange={handleResume}/>
+          <input type="file" name='resume' accept='.pdf' className='border-2 border-black p-3 rounded-lg cursor-pointer' onChange={handleResume}/>
           <h3 className='font-bold'>Upload LinkedIn URL:</h3>
           <input type="url" placeholder='https://www.linkedin.com/in/yourname' className='border-2 rounded-lg border-black p-3' name='linkedin' onChange={handleChange}/>
           <button type='submit' onClick={handlesubmit} className='border-2 border-black p-3 rounded-lg cursor-pointer font-bold'>Save and Continue</button>

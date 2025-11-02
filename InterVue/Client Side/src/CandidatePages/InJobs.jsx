@@ -12,7 +12,7 @@ function InJobs() {
 
   return (
     <div className='flex flex-col space-y-2 justify-center items-center'>
-      {exjobs.map((job) => (
+      {injobs.map((job) => (
         <JobCard key={job.id || job.id} job={job}/>
       ))}
     </div>
