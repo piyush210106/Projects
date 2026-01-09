@@ -23,7 +23,7 @@
 
 ### Node ###
 # Node.js dependency directory, logs, and environment files
-
+firebaseServiceAccount.json
 # Dependencies
 node_modules/
 jspm_packages/
