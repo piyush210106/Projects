@@ -7,7 +7,7 @@ const applicationSchema = new mongoose.Schema({
         required: true,
         index: true
     },
-    applicationId: {
+    jobId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Job',
         required: true,
@@ -21,8 +21,6 @@ const applicationSchema = new mongoose.Schema({
         type: String,
         enum: [
         'submitted',
-        'screening',
-        'shortlisted',
         'rejected',
         'interview_scheduled',
         'interview_completed',

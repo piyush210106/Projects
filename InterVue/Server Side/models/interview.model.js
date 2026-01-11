@@ -38,18 +38,10 @@ const interviewSchema = new mongoose.Schema({
             type: String,
             default: null
         },
-        accessToken: {
+        signalingServerUrl: {
             type: String,
             default: null
-        },
-        candidateToken: {
-            type: String,
-            default: null
-        },
-        recruiterToken: {
-            type: String,
-            default: null
-        },
+        }
     },
     feedback: {
         rating: {
@@ -85,12 +77,9 @@ const interviewSchema = new mongoose.Schema({
         }],
         decision: {
             type: String,
-            enum: ['proceed', 'reject', 'reconsider', 'pending'],
+            enum: ['proceed', 'reject', 'pending'],
             default: 'pending'
         },
-        submittedAt: {
-            type: Date
-        }
     },
     }, {
     timestamps: true
