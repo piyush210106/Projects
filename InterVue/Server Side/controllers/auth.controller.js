@@ -2,7 +2,7 @@ import admin from "../config/firebase.config.js";
 import User from "../models/user.model.js";
 import {bucket} from "../config/firebase.config.js";
 import Resume from "../models/resume.model.js";
-import triggerAIprocessing from "../services/ai.service.js";
+import triggerAIprocessing from "../services/resumeParsing.service.js";
 
 const login = async(req, res) => {
     try {
@@ -41,9 +41,9 @@ const signUp = async(req, res) => {
             return res.status(400).json({ message: "Resume is required" });
         }
         
-        let user = await User.findOne({firebaseUid: uid});
+        let existingUser = await User.findOne({firebaseUid: uid});
 
-        if(user) return res.status(400).json({message: "User already exists"});
+        if(existingUser) return res.status(400).json({message: "User already exists"});
 
         const filePath = `resumes/${uid}/resume-${Date.now()}.pdf`;
         const file = bucket.file(filePath);
@@ -59,7 +59,7 @@ const signUp = async(req, res) => {
             expires: "03-01-2030",
         });
 
-        user = await User.create({
+        let user = await User.create({
             firebaseUid: uid,
             email,
             role: user_profile.role,
@@ -80,6 +80,8 @@ const signUp = async(req, res) => {
             storagePath: filePath,
         });
 
+        
+
         res.cookie("session", idToken, {
             httpOnly: true,
             secure: true,        
@@ -87,15 +89,15 @@ const signUp = async(req, res) => {
             maxAge: 24 * 60 * 60 * 1000, 
         });
 
-        return res.status(200).json({
-            message: "Sign Up successfull",
-            role: user.role
-        });
-
         triggerAIprocessing({
             resume_id: resume._id.toString(), 
             resumeUrl: resume.url,
             firebaseUid: uid
+        });
+        
+        return res.status(200).json({
+            message: "Sign Up successfull",
+            role: user.role
         });
 
     } catch (error) {

@@ -7,12 +7,6 @@ const jobSchema = new mongoose.Schema({
         trim: true,
         index: true
     },
-    type: {
-        type: String,
-        enum: ['internal', 'external'],
-        required: true,
-        default: 'internal'
-    },
     company: {
         type: String,
         required: true,

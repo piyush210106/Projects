@@ -13,9 +13,11 @@ const applicationSchema = new mongoose.Schema({
         required: true,
         index: true
     },
-    resumeText: {
-        type: String, 
-        default: null
+    resume: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Job',
+        required: true,
+        index: true
     },
     status: {
         type: String,

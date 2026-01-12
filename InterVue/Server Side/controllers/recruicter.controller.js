@@ -2,7 +2,6 @@ import User from "../models/user.model.js";
 import Job from "../models/job.model.js";
 import Application from "../models/application.model.js";
 import Interview from "../models/interview.model.js";
-import { generateTokens } from "../utils/generateTokens.util.js";
 import {v4 as uuidv4} from "uuid";
 
 const addJob = async(req, res) => {
@@ -17,7 +16,6 @@ const addJob = async(req, res) => {
 
         let newJob = await Job.create({
             title: job.title,
-            type: "internal",
             company: user.company,
             department: job.department,
             description: job.description,
@@ -41,7 +39,7 @@ const scheduleInterview = async(req, res) => {
 
     try {
         const recruiterId = req.user.uid;
-        const {applicationId, scheduledAtDate, duration} = req.body;
+        const {applicationId, scheduledAtDate} = req.body;
 
         if(!applicationId || !scheduledAtDate){
                 return res.status(400).json({message: "Missing Fields"});
@@ -88,7 +86,7 @@ const scheduleInterview = async(req, res) => {
     }
 }
 
-const joinInterview = async(req, res) => {
+const joinInterview = async (req, res) => {
     try {
         const {interviewId} = req.body;
         const userId = req.user.uid;
@@ -122,7 +120,7 @@ const joinInterview = async(req, res) => {
             role,
             userId: user._id
         },
-            process.env.VIDEO_JWT_SECRET,
+            process.env.JWT_SECRET,
         { expiresIn: "15m" } 
         );
 
@@ -139,5 +137,68 @@ const joinInterview = async(req, res) => {
     }
 
 }
-export {addJob, scheduleInterview, joinInterview};
+
+const getApplications = async (req, res) => {
+    try {
+        const userId = req.user.uid;
+        if(!userId){
+            return res.status(400).json({message: "Unauthorized Login/Token not found"});
+        }
+        let user = await User.findOne({firebaseUid: userId});
+        if(!user){
+            return res.status(400).json({message: "User not found"});
+        }
+
+        const applications = await Application.find()
+            .populate({
+                path: "jobId",
+                match: { postedBy: user._id },
+            })
+            .populate("candidateId")
+            .exec();
+
+        const filteredApplications = applications.filter(app => app.jobId);
+            return res.status(200).json({
+                message: "Required Applications",
+                filteredApplications
+        });
+
+    } catch (error) {
+        console.log("Error in fetching applications ", error);
+        return res.status(400).json({message: "Error in fetching applications"});
+    }
+}
+
+const getInterviews = async (req, res) => {
+    try {
+        const userId = req.user.uid;
+        if(!userId){
+            return res.status(400).json({message: "Unauthorized Login/Token not found"});
+        }
+        let user = await User.findOne({firebaseUid: userId});
+        if(!user){
+            return res.status(400).json({message: "User not found"});
+        }
+
+        let interviews = await Interview.find({recruiterId: user._id}).sort({scheduledAt: -1});
+        if(interviews.length === 0){
+            return res.status(200).json({
+                message: "No Interviews Scheduled",
+                interviews: []
+            });
+        }
+        return res.status(200).json({
+            message: "Required Interviews Scheduled",
+            interviews
+        });
+    } catch (error) {
+        console.error("Error fetching interviews:", error);
+        return res.status(500).json({
+            message: "Internal server error"
+        });
+    }
+}
+
+export {addJob, scheduleInterview, joinInterview, getApplications, getInterviews};
+
 
