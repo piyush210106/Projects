@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const triggerAIMatching = ({applicationId, jobId, resumeId}) => {
+const triggerAIMatching = ({applicationId, job_text, resumeId}) => {
     axios.post("http://ai-service:8000/aiMatching",
                 {
-                    applicationId, jobId, resumeId,
+                    applicationId, job_text, resumeId,
                 },
                 {
                     timeout: 3000, 

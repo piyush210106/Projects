@@ -12,6 +12,7 @@ if not MONGO_URL:
 client = MongoClient(MONGO_URL)
 db = client[MONGO_NAME]
 resume_collection = db["resumes"]
+applications = db["applications"]
 
 try:
     print("MongoDB connected successfully")

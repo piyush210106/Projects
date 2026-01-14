@@ -161,6 +161,10 @@ const applyJob = async (req, res) => {
         if(!jobId){
             return res.status(400).json({message: "Job Id required"});
         }
+
+        const job = await Job.findById(jobId);
+        const job_text = job.description;
+
         if(!userId){
             return res.status(400).json({message: "Unauthorized Login/Token not found"});
         }
@@ -180,10 +184,10 @@ const applyJob = async (req, res) => {
             resume: resume._id,
             status: "submitted",
         })
-
+        
         triggerAIMatching({
-            applicationId: newApplication._id,
-            jobId,
+            applicationId: newApplication._id.toString() ,
+            job_text,
             resumeId: resume._id
         });
 
@@ -199,7 +203,3 @@ const applyJob = async (req, res) => {
 
 export {getInternalJobs, getScheduledInterviews, getAppliedJobs, joinInterviewCandidate, applyJob};
 
-// get userId user jobId
-// get resume from Db using userId
-// create application object
-// call jobmatching ai service

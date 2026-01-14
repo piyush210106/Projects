@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from resume_parse_pipeline import resume_parser_pipeline
+from job_resume_pipeline import job_resume_match
 
 app = FastAPI(title="AI Service")
 
@@ -11,3 +12,13 @@ async def process_resume(payload: dict):
         firebase_uid=payload["firebase_uid"]
     )
     return {"status": "processing started"}
+
+@app.post("/appication-matching")
+async def analyze_application(payload: dict):
+    job_resume_match(
+        job_text=payload["job_text"],
+        resume_vector_id=payload["resumeId"],
+        application_id=payload["application_id"]
+    )
+    return {"status": "Analysis Started"}
+

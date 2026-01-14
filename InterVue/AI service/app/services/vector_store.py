@@ -22,7 +22,8 @@ def store_resume_vector(
             "values": vector,
             "metadata": {
                 "resumeId": resume_id,
-                "firebaseUid": firebase_uid
+                "firebaseUid": firebase_uid,
+                "text": text
             }
         }
     ])
