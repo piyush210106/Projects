@@ -1,4 +1,4 @@
-import admin from "../config/firebase.config.js";
+import {admin} from "../config/firebase.config.js";
 import User from "../models/user.model.js";
 import {bucket} from "../config/firebase.config.js";
 import Resume from "../models/resume.model.js";
@@ -6,16 +6,28 @@ import triggerAIprocessing from "../services/resumeParsing.service.js";
 
 const login = async(req, res) => {
     try {
-        const idToken = req.body;
-        const { uid, email } = req.user;
+        console.log("login begins");
+        const {uid, email} = req.user;
+        const {role} = req.body;
+    
 
         let user = await User.findOne({firebaseUid: uid});
 
         if(!user){
-            return res.status(400).json({message: "Sign Up First"});
+            return res.status(200).json({
+                        message: "Sign Up First, Onboarding required",
+                        role: role,
+                        onboardingRequired: true
+                    });
+            // redirect to onboarding form from here
         }
 
-        res.cookie("session", idToken, {
+        if(role !== user.role){
+            return res.status(400).json({message: "Role Mismatched"});
+            //redirect to home page
+        }
+
+        res.cookie("session", uid, {
             httpOnly: true,
             secure: true,        
             sameSite: "none",    
@@ -24,7 +36,8 @@ const login = async(req, res) => {
 
         return res.status(200).json({
             message: "Login successful",
-            role: user.role
+            role: user.role,
+            onboardingRequired: false
         });
     } catch (error) {
         console.log("error in login", error);
@@ -32,19 +45,19 @@ const login = async(req, res) => {
     }
 }
 
-const signUp = async(req, res) => {
+const signUpCandidate = async(req, res) => {
     try {
         const {uid, email} = req.user;
-        const {user_profile, idToken} = req.body;
+        const {user_profile} = req.body;
+
+        if(!user_profile){
+            return res.status(400).json({message: "profile missing"});
+        }
 
         if (!req.file) {
             return res.status(400).json({ message: "Resume is required" });
         }
         
-        let existingUser = await User.findOne({firebaseUid: uid});
-
-        if(existingUser) return res.status(400).json({message: "User already exists"});
-
         const filePath = `resumes/${uid}/resume-${Date.now()}.pdf`;
         const file = bucket.file(filePath);
 
@@ -67,9 +80,6 @@ const signUp = async(req, res) => {
                 name: user_profile.name,
                 resumeUrl,
                 linkedinUrl: user_profile.linkedinUrl,
-                company: user_profile.company,
-                position: user_profile.position,
-                department: user_profile.department
             }
         });
 
@@ -80,9 +90,7 @@ const signUp = async(req, res) => {
             storagePath: filePath,
         });
 
-        
-
-        res.cookie("session", idToken, {
+        res.cookie("session", uid, {
             httpOnly: true,
             secure: true,        
             sameSite: "none",    
@@ -106,6 +114,45 @@ const signUp = async(req, res) => {
     }
 }
 
+const signUpRcruiter = async (req, res) => {
+    try {
+        const {uid, email} = req.user;
+        const {user_profile} = req.body;
+
+        if(!user_profile){
+            return res.status(400).json({message: "profile missing"});
+        }
+
+        let user = await User.create({
+            firebaseUid: uid,
+            email,
+            role: user_profile.role,
+            profile: {
+                name: user_profile.name,
+                company: user_profile.company,
+                position: user_profile.position,
+                department: user_profile.department
+            }
+        });
+
+        res.cookie("session", uid, {
+            httpOnly: true,
+            secure: true,        
+            sameSite: "none",    
+            maxAge: 24 * 60 * 60 * 1000, 
+        });
+
+        return res.status(200).json({
+            message: "Sign Up successfull",
+            role: user.role
+        });
+
+    } catch (error) {
+        console.log("Error in sign up", error);
+        return res.status(400).json({message: "Error in signUp"});
+    }
+
+}
 const logout = async (req, res) => {
     res.clearCookie("session", {
         httpOnly: true,
@@ -115,4 +162,4 @@ const logout = async (req, res) => {
     return res.status(200).json({message: "logOut successfull"});
 }
 
-export {login, signUp, logout};
+export {login, signUpCandidate, logout,signUpRcruiter};

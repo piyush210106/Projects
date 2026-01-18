@@ -1,8 +1,17 @@
-import admin from "../config/firebase.config.js";
+import {admin} from "../config/firebase.config.js";
 
 const verifyIdToken = async (req, res, next) => {
     try {
-        const token = req.cookies?.session;
+        console.log("Middleware started");
+        let token = null;
+        if (req.headers.authorization?.startsWith("Bearer ")) {
+            token = req.headers.authorization.split(" ")[1];
+        }
+
+        else if (req.cookies?.session) {
+            token = req.cookies.session;
+        }
+        
         if(!token) return res.status(400).json({message: "Token Required"});
     
         let decoded = await admin.auth().verifyIdToken(token);

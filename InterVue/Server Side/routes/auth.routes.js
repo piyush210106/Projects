@@ -1,10 +1,13 @@
 import { Router } from "express";
-import {login, signUp, logout} from "../controllers/auth.controller.js";
+import {login, signUpCandidate, signUpRcruiter, logout} from "../controllers/auth.controller.js";
 import verifyIdToken from "../middleware/firebase.middleware.js";
 import uploadResume from "../middleware/resumeUpload.middleware.js";
 
 const authRouter = Router();
 
 authRouter.route("/login").post(verifyIdToken, login);
-authRouter.route("/signUp").post(uploadResume.single("resume"), signUp);
+authRouter.route("/signUpCandidate").post(verifyIdToken, uploadResume.single("resume"), signUpCandidate);
+authRouter.route("/signUpRcruiter").post(verifyIdToken, signUpRcruiter);
 authRouter.route("/logout").post(verifyIdToken, logout);
+
+export {authRouter};
