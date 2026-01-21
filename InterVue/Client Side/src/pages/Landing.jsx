@@ -29,7 +29,6 @@ const Landing = () => {
 
     try {
         const {idToken} = await googleLogin();
-        console.log(idToken);
         const res = await axios.post(
             "http://localhost:3000/auth/login",
             {role},
@@ -46,8 +45,9 @@ const Landing = () => {
           navigate(`${res.data.role}/signUp`);
         }
         else{
-          console.log("Onboarding required");
-            navigate(`${res.data.role}/signUp`);
+          console.log("Login Successful");
+            if(res.data.role === "candidate") navigate(`${res.data.role}/injobs`);
+            else navigate(`/recruiter/addjob`);
         }
         
     } catch (error) {

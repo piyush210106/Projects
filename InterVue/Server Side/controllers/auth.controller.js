@@ -7,19 +7,24 @@ import triggerAIprocessing from "../services/resumeParsing.service.js";
 const login = async(req, res) => {
     try {
         console.log("login begins");
-        const {uid, email} = req.user;
+        const {uid, email, idToken} = req.user;
         const {role} = req.body;
-    
+        
 
         let user = await User.findOne({firebaseUid: uid});
-
         if(!user){
+            res.cookie("session", idToken, {
+                httpOnly: true,
+                secure: true,        
+                sameSite: "none",    
+                maxAge: 24 * 60 * 60 * 1000, 
+            });
+
             return res.status(200).json({
                         message: "Sign Up First, Onboarding required",
                         role: role,
                         onboardingRequired: true
                     });
-            // redirect to onboarding form from here
         }
 
         if(role !== user.role){
@@ -27,7 +32,7 @@ const login = async(req, res) => {
             //redirect to home page
         }
 
-        res.cookie("session", uid, {
+        res.cookie("session", idToken, {
             httpOnly: true,
             secure: true,        
             sameSite: "none",    
@@ -90,13 +95,6 @@ const signUpCandidate = async(req, res) => {
             storagePath: filePath,
         });
 
-        res.cookie("session", uid, {
-            httpOnly: true,
-            secure: true,        
-            sameSite: "none",    
-            maxAge: 24 * 60 * 60 * 1000, 
-        });
-
         triggerAIprocessing({
             resume_id: resume._id.toString(), 
             resumeUrl: resume.url,
@@ -114,32 +112,25 @@ const signUpCandidate = async(req, res) => {
     }
 }
 
-const signUpRcruiter = async (req, res) => {
+const signUpRecruiter = async (req, res) => {
     try {
         const {uid, email} = req.user;
-        const {user_profile} = req.body;
-
-        if(!user_profile){
+        const {fullName, companyName, department, position, role} = req.body;
+        console.log(req.body);
+        if(!fullName || !companyName || !department || !position || !role){
             return res.status(400).json({message: "profile missing"});
         }
 
         let user = await User.create({
             firebaseUid: uid,
             email,
-            role: user_profile.role,
+            role: role,
             profile: {
-                name: user_profile.name,
-                company: user_profile.company,
-                position: user_profile.position,
-                department: user_profile.department
+                name: fullName,
+                company: companyName,
+                position: position,
+                department: department
             }
-        });
-
-        res.cookie("session", uid, {
-            httpOnly: true,
-            secure: true,        
-            sameSite: "none",    
-            maxAge: 24 * 60 * 60 * 1000, 
         });
 
         return res.status(200).json({
@@ -162,4 +153,4 @@ const logout = async (req, res) => {
     return res.status(200).json({message: "logOut successfull"});
 }
 
-export {login, signUpCandidate, logout,signUpRcruiter};
+export {login, signUpCandidate, logout,signUpRecruiter};

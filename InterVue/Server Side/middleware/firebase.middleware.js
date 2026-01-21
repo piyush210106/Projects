@@ -16,7 +16,7 @@ const verifyIdToken = async (req, res, next) => {
     
         let decoded = await admin.auth().verifyIdToken(token);
     
-        req.user = { uid: decoded.uid, email: decoded.email };
+        req.user = { uid: decoded.uid, email: decoded.email, idToken: token };
         next();
     } catch (error) {
         console.log("Invalid session", error);

@@ -1,0 +1,263 @@
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { 
+  FiBriefcase, FiMapPin, FiDollarSign, FiCalendar, FiUsers, 
+  FiChevronLeft, FiSend, FiBookmark, FiGlobe, FiCpu,
+  FiAward, FiLayers, FiCheckCircle, FiZap
+} from 'react-icons/fi';
+
+ 
+
+const JobView = () => {
+  const [isSaved, setIsSaved] = useState(false);
+  const [isApplying, setIsApplying] = useState(false);
+
+  // Mock Data mapped from provided Mongoose Schema
+  const job = {
+    title: "Senior AI Full-Stack Developer",
+    company: "InterVue AI",
+    department: "Engineering",
+    description: "Join the team building the future of recruitment. You will be responsible for scaling our WebRTC video engine and integrating advanced LLMs for resume parsing.",
+    requirements: [
+      "5+ years of experience with React and Node.js",
+      "Strong understanding of WebRTC and real-time communication",
+      "Experience with MongoDB and Mongoose",
+      "Familiarity with OpenAI API or similar LLM frameworks"
+    ],
+    responsibilities: [
+      "Architect and maintain scalable frontend components",
+      "Optimize backend performance for high-concurrency interviews",
+      "Collaborate with AI researchers to deploy parsing models",
+      "Mentor junior developers and participate in code reviews"
+    ],
+    qualifications: {
+      education: "Bachelor's in Computer Science or equivalent experience",
+      experienceYears: 5,
+      skills: ["React", "Node.js", "WebRTC", "Mongoose", "Tailwind CSS"]
+    },
+    location: {
+      city: "San Francisco",
+      state: "CA",
+      country: "USA",
+      remote: true,
+      hybrid: false
+    },
+    salary: {
+      min: 140000,
+      max: 190000,
+      currency: "USD"
+    },
+    employmentType: "full-time",
+    openings: 3,
+    externalLink: null,
+    createdAt: "2026-01-10T10:00:00Z"
+  };
+
+  const handleApply = () => {
+    setIsApplying(true);
+    // Doherty Threshold: Interaction feedback under 400ms
+    setTimeout(() => {
+      alert("Application sent successfully via InterVue AI!");
+      setIsApplying(false);
+    }, 1200);
+  };
+
+  return (
+    <div className="min-h-screen bg-black text-white selection:bg-purple-500/30 font-sans pb-20">
+      
+      {/* Dynamic Background */}
+      <div className="fixed inset-0 pointer-events-none -z-10">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-purple-600/5 blur-[120px] rounded-full" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-900/5 blur-[100px] rounded-full" />
+      </div>
+
+      {/* Header Navigation */}
+      <nav className="sticky top-0 z-40 bg-black/80 backdrop-blur-md border-b border-white/5 py-4 px-6">
+        <div className="max-w-6xl mx-auto flex justify-between items-center">
+          <button className="flex items-center gap-2 text-zinc-400 hover:text-purple-400 transition-colors group">
+            <FiChevronLeft className="group-hover:-translate-x-1 transition-transform" /> 
+            <span className="font-medium">Back to Jobs</span>
+          </button>
+          <div className="flex gap-3">
+            <button 
+              onClick={() => setIsSaved(!isSaved)}
+              className={`p-3 rounded-xl border transition-all ${isSaved ? 'bg-purple-600 border-purple-500 text-white' : 'border-zinc-800 text-zinc-400 hover:border-zinc-600'}`}
+            >
+              <FiBookmark fill={isSaved ? "currentColor" : "none"} />
+            </button>
+            <button className="p-3 rounded-xl border border-zinc-800 text-zinc-400 hover:border-zinc-600 transition-all">
+              <FiSend />
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <main className="max-w-6xl mx-auto px-6 pt-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          
+          {/* LEFT CONTENT: Job Details (Law of Proximity) */}
+          <div className="lg:col-span-8 space-y-12">
+            
+            {/* Hero Section */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <h1 className="text-4xl md:text-5xl font-black mb-6 tracking-tight">{job.title}</h1>
+              <div className="flex flex-wrap gap-4 items-center">
+                <div className="flex items-center gap-2 bg-zinc-900 px-4 py-2 rounded-full border border-white/5">
+                  <div className="w-6 h-6 bg-purple-600 rounded-md flex items-center justify-center text-[10px]">IV</div>
+                  <span className="font-bold text-sm">{job.company}</span>
+                </div>
+                <span className="text-zinc-500">•</span>
+                <span className="text-zinc-400 font-medium flex items-center gap-2">
+                  <FiMapPin className="text-purple-500" /> {job.location.city}, {job.location.state}
+                </span>
+                <span className="px-3 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-md text-xs font-bold uppercase tracking-widest">
+                  {job.employmentType}
+                </span>
+              </div>
+            </motion.div>
+
+            {/* AI Summary Highlight (Aesthetic-Usability) */}
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              transition={{ delay: 0.2 }}
+              className="p-6 rounded-3xl bg-gradient-to-r from-purple-900/20 to-transparent border border-purple-500/20 flex items-start gap-4"
+            >
+              <FiZap className="text-purple-500 mt-1 shrink-0 animate-pulse" />
+              <div>
+                <h4 className="text-sm font-bold uppercase tracking-widest text-purple-400 mb-1">AI Match Insight</h4>
+                <p className="text-zinc-300 text-sm leading-relaxed">Based on your profile, you have a 85% skill match for this role. Your experience with WebRTC is a key highlight for this department.</p>
+              </div>
+            </motion.div>
+
+            {/* Job Content Sections (Miller's Law - Chunking) */}
+            <section className="space-y-8 text-zinc-300">
+              <div>
+                <h3 className="text-xl font-bold text-white mb-4">About the Role</h3>
+                <p className="leading-relaxed text-lg text-zinc-400">{job.description}</p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-8 pt-4">
+                <div className="space-y-4">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <FiCheckCircle className="text-purple-500" /> Requirements
+                  </h3>
+                  <ul className="space-y-3">
+                    {job.requirements.map((item, i) => (
+                      <li key={i} className="flex gap-3 text-sm leading-relaxed border-l border-zinc-800 pl-4">{item}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <FiLayers className="text-purple-500" /> Responsibilities
+                  </h3>
+                  <ul className="space-y-3">
+                    {job.responsibilities.map((item, i) => (
+                      <li key={i} className="flex gap-3 text-sm leading-relaxed border-l border-zinc-800 pl-4">{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          {/* RIGHT SIDEBAR: Action & Stats (Fitts's Law & Hick's Law) */}
+          <div className="lg:col-span-4 space-y-6">
+            
+            {/* Application Card */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-zinc-950 border border-white/5 rounded-[2rem] p-8 sticky top-28"
+            >
+              <div className="mb-8">
+                <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest mb-1">Salary Range</p>
+                <h2 className="text-3xl font-black">
+                  {job.salary.currency} {(job.salary.min/1000).toFixed(0)}k - {(job.salary.max/1000).toFixed(0)}k
+                  <span className="text-sm text-zinc-500 font-medium lowercase"> / year</span>
+                </h2>
+              </div>
+
+              <div className="space-y-4 mb-8">
+                <div className="flex justify-between items-center text-sm border-b border-white/5 pb-3">
+                  <span className="text-zinc-500 flex items-center gap-2"><FiUsers /> Openings</span>
+                  <span className="font-bold">{job.openings} Seats</span>
+                </div>
+                <div className="flex justify-between items-center text-sm border-b border-white/5 pb-3">
+                  <span className="text-zinc-500 flex items-center gap-2"><FiGlobe /> Remote</span>
+                  <span className="font-bold text-green-500">{job.location.remote ? 'Yes' : 'No'}</span>
+                </div>
+                <div className="flex justify-between items-center text-sm border-b border-white/5 pb-3">
+                  <span className="text-zinc-500 flex items-center gap-2"><FiCalendar /> Posted</span>
+                  <span className="font-bold">{new Date(job.createdAt).toLocaleDateString()}</span>
+                </div>
+              </div>
+
+              <button 
+                onClick={handleApply}
+                disabled={isApplying}
+                className="w-full py-5 bg-purple-600 hover:bg-purple-500 text-white font-black text-lg rounded-2xl transition-all shadow-xl shadow-purple-900/20 active:scale-95 flex items-center justify-center gap-3 overflow-hidden disabled:opacity-50"
+              >
+                {isApplying ? (
+                  <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }}>
+                    <FiCpu />
+                  </motion.div>
+                ) : (
+                  <>Apply with AI Profile <FiArrowRight /></>
+                )}
+              </button>
+              
+              <p className="text-[10px] text-center text-zinc-600 mt-4 uppercase font-bold tracking-tighter">
+                Our AI will auto-submit your InterVue resume
+              </p>
+            </motion.div>
+
+            {/* Required Qualifications (Law of Similarity) */}
+            <div className="bg-zinc-950 border border-white/5 rounded-[2rem] p-8">
+              <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-6">Preferred Background</h4>
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <FiAward className="text-purple-500 shrink-0" size={20} />
+                  <div>
+                    <p className="text-xs text-zinc-500 font-bold uppercase">Education</p>
+                    <p className="text-sm font-medium">{job.qualifications.education}</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <FiBriefcase className="text-purple-500 shrink-0" size={20} />
+                  <div>
+                    <p className="text-xs text-zinc-500 font-bold uppercase">Min. Experience</p>
+                    <p className="text-sm font-medium">{job.qualifications.experienceYears} Years</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8">
+                <p className="text-xs text-zinc-500 font-bold uppercase mb-3">Key Skills</p>
+                <div className="flex flex-wrap gap-2">
+                  {job.qualifications.skills.map(skill => (
+                    <span key={skill} className="px-3 py-1 bg-zinc-900 border border-white/5 text-zinc-300 text-[10px] font-bold rounded-lg uppercase">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+// Simple Arrow Right helper icon
+const FiArrowRight = () => (
+  <svg stroke="currentColor" fill="none" strokeWidth="3" viewBox="0 0 24 24" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+);
+
+export default JobView;
