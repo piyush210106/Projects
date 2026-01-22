@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { NavLink } from 'react-router-dom';
 import { 
   FiMapPin, 
   FiDollarSign, 
@@ -13,7 +14,8 @@ import {
 
 const JobCard = ({ job, onClick }) => {
   // Standardizing data based on your Mongoose Schema
-  const data = job || {
+  const data = {
+    job_id: 1,
     title: "Senior AI Full-Stack Developer",
     company: "InterVue Systems",
     location: { city: "San Francisco", state: "CA", remote: true },
@@ -33,7 +35,7 @@ const JobCard = ({ job, onClick }) => {
       className="group relative w-full bg-zinc-950 border border-white/5 hover:border-purple-500/40 rounded-3xl p-5 md:p-6 cursor-pointer transition-all duration-300 shadow-xl overflow-hidden mb-4"
     >
       {/* Background Decorative Glow */}
-      <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-purple-600/5 to-transparent pointer-events-none" />
+      <div className="absolute top-0 right-0 w-64 h-full bg-linear-to-l from-purple-600/5 to-transparent pointer-events-none" />
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
         
@@ -86,37 +88,23 @@ const JobCard = ({ job, onClick }) => {
         {/* RIGHT SECTION: CTA (Fitts's Law) */}
         <div className="md:ml-4 flex items-center">
           <div className="w-12 h-12 rounded-2xl bg-zinc-900 group-hover:bg-purple-600 flex items-center justify-center text-zinc-600 group-hover:text-white transition-all duration-300 shadow-lg group-hover:shadow-purple-500/40">
-            <FiArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            <NavLink to={`/candidate/jobview/${data.job_id}`}>            
+              <FiArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            </NavLink>
           </div>
         </div>
 
       </div>
 
       {/* BOTTOM: Skill Badges (Hidden on tiny screens to reduce clutter/Hick's Law) */}
-      <div className="hidden sm:flex flex-wrap gap-2 mt-4 ml-[76px]">
+      {/* <div className="hidden sm:flex flex-wrap gap-2 mt-4 ml-19">
         {data.qualifications.skills.slice(0, 4).map((skill, i) => (
           <span key={i} className="text-[10px] font-bold text-zinc-500 border border-zinc-800 px-2 py-0.5 rounded uppercase">
             {skill}
           </span>
         ))}
-      </div>
+      </div> */}
     </motion.div>
-  );
-};
-
-// Example Grid showing how it takes up the screen width
-const JobFeedList = () => {
-  return (
-    <div className="min-h-screen bg-black flex flex-col items-center py-20 px-4 md:px-12">
-      <div className="w-full max-w-5xl">
-        <h2 className="text-zinc-500 font-black text-xs uppercase tracking-[0.3em] mb-8 px-2">
-          Recommended for your skills
-        </h2>
-        <JobCardWide />
-        <JobCardWide />
-        <JobCardWide />
-      </div>
-    </div>
   );
 };
 

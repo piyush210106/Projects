@@ -61,7 +61,7 @@ const AddJob = () => {
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-purple-500/30 py-12 px-6 relative overflow-hidden">
       {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-600/5 blur-[120px] rounded-full -z-10" />
+      <div className="absolute top-0 right-0 w-125 h-125 bg-purple-600/5 blur-[120px] rounded-full -z-10" />
       
       <div className="max-w-4xl mx-auto">
         {/* Header (Jakob's Law) */}

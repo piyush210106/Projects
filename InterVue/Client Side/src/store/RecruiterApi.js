@@ -17,9 +17,9 @@ const recruiterApi = baseApi.injectEndpoints({
             providesTags: ["Applications"]
         }),
 
-        getInterviews: builder.query({
+        getInterviewsRec: builder.query({
             query: () => "/recruiter/interviews",
-            providesTags: ["Interviews"]
+            providesTags: ["InterviewsRecruiter"]
         }),
 
         scheduleInterview: builder.mutation({
@@ -35,5 +35,5 @@ const recruiterApi = baseApi.injectEndpoints({
 
 export const    {useAddJobMutation,
                 useGetApplicationsQuery, 
-                useGetInterviewsQuery, 
+                useGetInterviewsRecQuery, 
                 useScheduleInterviewMutation} = recruiterApi;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { NavLink } from 'react-router-dom';
 import { 
   FiBriefcase, FiMapPin, FiDollarSign, FiCalendar, FiUsers, 
   FiChevronLeft, FiSend, FiBookmark, FiGlobe, FiCpu,
@@ -67,17 +68,17 @@ const JobView = () => {
       
       {/* Dynamic Background */}
       <div className="fixed inset-0 pointer-events-none -z-10">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-purple-600/5 blur-[120px] rounded-full" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-900/5 blur-[100px] rounded-full" />
+        <div className="absolute top-0 right-0 w-150 h-150 bg-purple-600/5 blur-[120px] rounded-full" />
+        <div className="absolute bottom-0 left-0 w-100 h-100 bg-purple-900/5 blur-[100px] rounded-full" />
       </div>
 
       {/* Header Navigation */}
       <nav className="sticky top-0 z-40 bg-black/80 backdrop-blur-md border-b border-white/5 py-4 px-6">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <button className="flex items-center gap-2 text-zinc-400 hover:text-purple-400 transition-colors group">
+          <NavLink to={"/candidate/injobs"} className="flex items-center gap-2 text-zinc-400 hover:text-purple-400 transition-colors group">
             <FiChevronLeft className="group-hover:-translate-x-1 transition-transform" /> 
             <span className="font-medium">Back to Jobs</span>
-          </button>
+          </NavLink >
           <div className="flex gap-3">
             <button 
               onClick={() => setIsSaved(!isSaved)}
@@ -120,18 +121,18 @@ const JobView = () => {
             </motion.div>
 
             {/* AI Summary Highlight (Aesthetic-Usability) */}
-            <motion.div 
+            {/* <motion.div 
               initial={{ opacity: 0 }} 
               animate={{ opacity: 1 }} 
               transition={{ delay: 0.2 }}
-              className="p-6 rounded-3xl bg-gradient-to-r from-purple-900/20 to-transparent border border-purple-500/20 flex items-start gap-4"
+              className="p-6 rounded-3xl bg-linear-to-r from-purple-900/20 to-transparent border border-purple-500/20 flex items-start gap-4"
             >
               <FiZap className="text-purple-500 mt-1 shrink-0 animate-pulse" />
               <div>
                 <h4 className="text-sm font-bold uppercase tracking-widest text-purple-400 mb-1">AI Match Insight</h4>
                 <p className="text-zinc-300 text-sm leading-relaxed">Based on your profile, you have a 85% skill match for this role. Your experience with WebRTC is a key highlight for this department.</p>
               </div>
-            </motion.div>
+            </motion.div> */}
 
             {/* Job Content Sections (Miller's Law - Chunking) */}
             <section className="space-y-8 text-zinc-300">
@@ -172,7 +173,7 @@ const JobView = () => {
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-zinc-950 border border-white/5 rounded-[2rem] p-8 sticky top-28"
+              className="bg-zinc-950 border border-white/5 rounded-4xl p-8 top-28"
             >
               <div className="mb-8">
                 <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest mb-1">Salary Range</p>
@@ -217,7 +218,7 @@ const JobView = () => {
             </motion.div>
 
             {/* Required Qualifications (Law of Similarity) */}
-            <div className="bg-zinc-950 border border-white/5 rounded-[2rem] p-8">
+            <div className="bg-zinc-950 border border-white/5 rounded-4xl p-8">
               <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-6">Preferred Background</h4>
               <div className="space-y-6">
                 <div className="flex gap-4">

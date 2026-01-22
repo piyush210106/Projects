@@ -6,7 +6,7 @@ const baseApi = createApi({
         baseUrl: "http://localhost:3000",
         credentials: "include"
     }),
-    tagTypes: ["Jobs", "Applications", "Interviews"],
+    tagTypes: ["Jobs", "Applications", "InterviewsRecruiter", "InternalJobs", "ExternalJobs", "AppliedJobs", "InterviewsCandidate"],
   endpoints: () => ({}),
 });
 

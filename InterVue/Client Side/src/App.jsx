@@ -45,9 +45,19 @@ const router = createBrowserRouter([
     path: "/candidate/injobs",
     element: (
       <>
-      <div className='bg-black w-screen'>
+      <div className='bg-black max-w-screen'>
         <NavbarCan/>
         <InJobs/>
+      </div>
+      </>
+    )
+  },
+  {
+    path: "/candidate/jobview/:id",
+    element: (
+      <>
+      <div className='bg-black max-w-screen'>
+        <JobView/>
       </div>
       </>
     )
