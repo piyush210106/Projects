@@ -12,7 +12,7 @@ import {
 } from 'react-icons/fi';
 
 
-const JobCard = ({ job, onClick }) => {
+const JobCard = ({ job }) => {
   // Standardizing data based on your Mongoose Schema
   const data = {
     job_id: 1,
@@ -31,7 +31,6 @@ const JobCard = ({ job, onClick }) => {
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       whileHover={{ scale: 1.01 }}
-      onClick={onClick}
       className="group relative w-full bg-zinc-950 border border-white/5 hover:border-purple-500/40 rounded-3xl p-5 md:p-6 cursor-pointer transition-all duration-300 shadow-xl overflow-hidden mb-4"
     >
       {/* Background Decorative Glow */}

@@ -13,20 +13,20 @@ const recruiterApi = baseApi.injectEndpoints({
         }),
 
         getApplications: builder.query({
-            query:() => "/recruiter/applications",
+            query:() => "/recruiter/getapplications",
             providesTags: ["Applications"]
         }),
 
         getInterviewsRec: builder.query({
-            query: () => "/recruiter/interviews",
+            query: () => "/recruiter/getinterviews",
             providesTags: ["InterviewsRecruiter"]
         }),
 
         scheduleInterview: builder.mutation({
             query: ({applicationId, data}) => ({
-                url: "/recruiter/schedule",
+                url: "/recruiter/scheduleinterview",
                 method: "POST",
-                data: {applicationId, data}
+                body: {applicationId, data}
             }),
             invalidatesTags: ["Applications", "Interviews"]
         })

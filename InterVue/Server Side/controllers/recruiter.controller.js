@@ -6,28 +6,28 @@ import {v4 as uuidv4} from "uuid";
 
 const addJob = async(req, res) => {
     try {
-        const {idToken, job} = req.body;
+        const jobData = req.body;
         const {uid} = req.user;
-
-        if(!idToken) return res.status(400).json({message: "Token required"});
+        console.log(req.body);
 
         let user = await User.findOne({firebaseUid: uid});
         if(!user) return res.status(400).json({message: "Invalid User"});
 
         let newJob = await Job.create({
-            title: job.title,
-            company: user.company,
-            department: job.department,
-            description: job.description,
-            requirements: job.requirements,
-            qualification: job.qualification,
-            location: job.location,
-            salary: job.salary,
-            employmentType: job.employmentType,
+            title: jobData.title,
+            company: user.profile.company,
+            department: jobData.department,
+            description: jobData.description,
+            requirements: jobData.requirements,
+            responsibilities: jobData.responsibilities,
+            qualification: jobData.qualification,
+            location: jobData.location,
+            salary: jobData.salary,
+            employmentType: jobData.employmentType,
             postedBy: user._id,
-            openings: job.openings
+            openings: jobData.openings
         })
-
+        console.log("Job added");
         return res.status(200).json({message: "Job successfully added!!"});
     } catch (error) {
         console.log("Error in adding job", error);

@@ -1,20 +1,32 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { NavLink } from 'react-router-dom';
+import {useScheduleInterviewMutation} from "../store/RecruiterApi.js";
 import { 
   FiUser, FiBriefcase, FiDownload, FiCheckCircle, FiXCircle, 
   FiCpu, FiLinkedin, FiMail, FiMapPin, FiChevronLeft, 
-  FiStar, FiTrendingUp, FiMessageCircle, FiZap 
+  FiStar, FiTrendingUp, FiMessageCircle, FiZap, FiCalendar, FiClock, FiSend 
 } from 'react-icons/fi';
 
-/**
- * InterVue - Recruiter: Candidate Application Details Page
- * UX Principles: Miller's Law (Data Chunking), Aesthetic-Usability (AI Glow), 
- * Fitts's Law (Clear CTA Targets), Law of Proximity (Grouped Analysis).
- */
-
 const ApplicationView = () => {
-  // Mock Data following the requested Mongoose Schema & Profile details
+
+  const [schedule, {isLoading}] = useScheduleInterviewMutation();
+
+  const [isScheduling, setIsScheduling] = useState(false);
+  const [scheduleData, setScheduleData] = useState({ date: '', time: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleScheduleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    await schedule({
+      applicationId: applicantData.id,
+      data: scheduleData
+    });
+  };
+
   const applicantData = {
+    id: 1,
     name: "Alex Rivera",
     email: "alex.rivera@neural-dev.io",
     phone: "+1 (555) 012-3456",
@@ -49,19 +61,67 @@ const ApplicationView = () => {
     <div className="min-h-screen bg-black text-white font-sans selection:bg-purple-500/30 pb-20">
       {/* Background Decor */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-        <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-purple-600/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-purple-900/10 blur-[100px] rounded-full" />
+        <div className="absolute top-[-10%] right-[-10%] w-150 h-150 bg-purple-600/10 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-100 h-100 bg-purple-900/10 blur-[100px] rounded-full" />
       </div>
 
       {/* Navigation Header (Jakob's Law) */}
       <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/5 py-4 px-6 md:px-12">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <button className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors group font-bold uppercase text-xs tracking-widest">
+          <NavLink to={"/recruiter/applications"} className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors group font-bold uppercase text-xs tracking-widest">
             <FiChevronLeft className="group-hover:-translate-x-1 transition-transform" /> Back to Applicants
-          </button>
+          </NavLink>
+          
           <div className="flex gap-4">
-             <button className="px-6 py-2 rounded-xl bg-zinc-900 border border-white/5 hover:border-purple-500/50 transition-all text-xs font-bold uppercase tracking-widest">Reject</button>
-             <button className="px-6 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-900/20 transition-all text-xs font-bold uppercase tracking-widest">Schedule Interview</button>
+            {!isScheduling ? (
+              <>
+                <button className="px-6 py-2 rounded-xl bg-zinc-900 border border-white/5 hover:border-purple-500/50 transition-all text-xs font-bold uppercase tracking-widest">Reject</button>
+                <button 
+                  onClick={() => setIsScheduling(true)}
+                  className="px-6 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-900/20 transition-all text-xs font-bold uppercase tracking-widest"
+                >
+                  Schedule Interview
+                </button>
+              </>
+            ) : (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex items-center gap-3 bg-zinc-900 p-1.5 rounded-2xl border border-purple-500/30 shadow-2xl"
+              >
+                <div className="flex items-center gap-2 px-3">
+                  <FiCalendar className="text-purple-500" />
+                  <input 
+                    type="date" 
+                    required
+                    className="bg-transparent text-lg font-bold outline-none border-none text-zinc-300 focus:text-white"
+                    onChange={(e) => setScheduleData({...scheduleData, date: e.target.value})}
+                  />
+                </div>
+                <div className="flex items-center gap-2 px-3 border-l border-white/10">
+                  <FiClock className="text-purple-500" />
+                  <input 
+                    type="time" 
+                    required
+                    className="bg-transparent text-xl font-bold outline-none border-none text-purple-300 focus:text-white"
+                    onChange={(e) => setScheduleData({...scheduleData, time: e.target.value})}
+                  />
+                </div>
+                <button 
+                  onClick={handleScheduleSubmit}
+                  disabled={isSubmitting || !scheduleData.date || !scheduleData.time}
+                  className="px-6 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-widest flex items-center gap-2 disabled:opacity-50"
+                >
+                  {isSubmitting ? "Processing..." : "Confirm"} <FiSend />
+                </button>
+                <button 
+                  onClick={() => setIsScheduling(false)}
+                  className="p-2 text-zinc-500 hover:text-white transition-colors"
+                >
+                  <FiXCircle />
+                </button>
+              </motion.div>
+            )}
           </div>
         </div>
       </header>
@@ -69,7 +129,7 @@ const ApplicationView = () => {
       <main className="max-w-7xl mx-auto px-6 md:px-12 pt-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           
-          {/* LEFT: Candidate & Job Profile (Miller's Law - Chunking Identity) */}
+          {/* LEFT: Candidate & Job Profile */}
           <div className="lg:col-span-4 space-y-8">
             <motion.section {...fadeInUp} className="bg-zinc-950 border border-white/5 rounded-[2.5rem] p-8 overflow-hidden relative">
               <div className="absolute top-0 right-0 p-6 opacity-10"><FiUser size={80}/></div>
@@ -109,12 +169,12 @@ const ApplicationView = () => {
             </motion.section>
           </div>
 
-          {/* RIGHT: AI ANALYSIS (Aesthetic-Usability & Goal-Gradient) */}
+          {/* RIGHT: AI ANALYSIS */}
           <div className="lg:col-span-8 space-y-8">
             
             {/* AI Score Header */}
             <motion.section {...fadeInUp} className="bg-zinc-950 border border-purple-500/20 rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-purple-600/10 to-transparent pointer-events-none" />
+               <div className="absolute top-0 right-0 w-64 h-full bg-linear-to-l from-purple-600/10 to-transparent pointer-events-none" />
                
                <div className="flex flex-col md:flex-row justify-between items-center gap-8 relative z-10">
                  <div className="flex items-center gap-8">
@@ -167,7 +227,6 @@ const ApplicationView = () => {
                  </div>
               </motion.section>
 
-              {/* Skills Mapping (Law of Similarity) */}
               <motion.section {...fadeInUp} className="bg-zinc-950 border border-white/5 rounded-[2.5rem] p-8">
                  <div className="mb-8">
                     <h3 className="text-xs font-black uppercase tracking-widest text-green-500 mb-4 flex items-center gap-2">
@@ -196,7 +255,7 @@ const ApplicationView = () => {
               </motion.section>
             </div>
 
-            {/* Quick Action Dock (Fitts's Law) */}
+            {/* Quick Action Dock */}
             <motion.div 
               {...fadeInUp}
               className="p-4 bg-zinc-900/50 border border-white/5 rounded-3xl flex items-center justify-between"

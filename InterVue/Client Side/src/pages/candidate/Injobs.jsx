@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import JobCard from "../../components/JobCard.jsx";
-import { NavLink } from 'react-router-dom';
+import { useGetInternalJobsQuery } from '../../store/CandidateApi.js';
 import { 
   FiSearch, 
   FiMapPin, 
@@ -56,16 +56,12 @@ const JOBS_DATA = [
 ];
 
 export default function InJobs() {
-  const [selectedJob, setSelectedJob] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 600);
-    return () => clearTimeout(timer);
-  }, []);
+  const {data: jobs, isLoading} = useGetInternalJobsQuery();
 
-  const filteredJobs = JOBS_DATA.filter(job => 
+
+  const filteredJobs = jobs.filter(job => 
     job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     job.department.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -100,7 +96,7 @@ export default function InJobs() {
         </motion.section>
 
         <div className="grid gap-4">
-          {loading ? (
+          {isLoading ? (
             [1, 2, 3].map(n => (
               <div key={n} className="h-32 w-full bg-white/5 animate-pulse rounded-2xl border border-white/5" />
             ))
@@ -111,14 +107,13 @@ export default function InJobs() {
                   key={job.id} 
                   job={job} 
                   index={index} 
-                  onClick={() => setSelectedJob(job)} 
                 />
               ))}
             </AnimatePresence>
           )}
         </div>
 
-        {!loading && filteredJobs.length === 0 && (
+        {!isLoading && filteredJobs.length === 0 && (
           <div className="text-center py-20 text-gray-500">
             No positions found. Try a different search term.
           </div>

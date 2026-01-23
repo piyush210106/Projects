@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {addJob, scheduleInterview, joinInterview, getApplications, getInterviews}
- from "../controllers/recruicter.controller.js";
+ from "../controllers/recruiter.controller.js";
 import verifyIdToken from "../middleware/firebase.middleware.js";
 
 const recruiterRouter = Router();

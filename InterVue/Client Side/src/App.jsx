@@ -14,6 +14,7 @@ import SignUpRec from './pages/recruiter/SignUpRec.jsx';
 import NavbarRec from './pages/recruiter/NavbarRec.jsx';
 import AddJob from './pages/recruiter/AddJob.jsx';
 import Applications from './pages/recruiter/Applications.jsx';
+import InterviewsRec from './pages/recruiter/InterviewsRec.jsx';
 
 import JobView from './components/JobView.jsx';
 import CallView from './components/CallView.jsx';
@@ -41,6 +42,8 @@ const router = createBrowserRouter([
       <SignUpRec/>
     )
   },
+
+  //candidate
   {
     path: "/candidate/injobs",
     element: (
@@ -107,6 +110,8 @@ const router = createBrowserRouter([
       <CallView/>
     )
   },
+
+  // recruiter
   {
     path: "/recruiter/addjob",
     element: (
@@ -118,24 +123,43 @@ const router = createBrowserRouter([
       </div >
     )
   },
-    {
-    path: "/recruiter/application/",
+  {
+    path: "/recruiter/interviews",
+    element: (
+      <div className='flex flex-col min-h-screen bg-black max-w-screen'>
+      <NavbarRec/>
+      <main className='py-15 '>
+        <InterviewsRec/>
+      </main>
+      </div >
+    )
+  },
+  {
+    path: "/recruiter/applications",
     element: (
       <div className='flex flex-col bg-black'>
         <NavbarRec/>
-        <Applications/>
+        <main className='py-12'>
+          <Applications/>
+        </main>
       </div>
     )
   },
-
   {
-    path: "/recruiter/application/:id",
+    path: "/application/:id",
+    element: (
+      <ApplicationView/>
+    )
+  },
+  {
+    path: "/callview/:id",
     element: (
       <>
-      <ApplicationView/>
+      <CallView/>
       </>
     )
   },
+
 
 
 ])

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { NavLink } from 'react-router-dom';
 import { 
   FiVideo, 
   FiClock, 
@@ -11,15 +12,15 @@ import {
 } from 'react-icons/fi';
 
 
-const InterviewCard = ({ interview, onJoin }) => {
+const InterviewCard = (interview) => {
   const [timeLeft, setTimeLeft] = useState("");
   const [isLive, setIsLive] = useState(false);
 
-  // Standardizing data based on your Mongoose Schema context
-  const data = interview || {
+  const data = {
+    id: 1,
     jobTitle: "Lead AI Solutions Architect",
     interviewer: "Dr. Aris Thorne",
-    scheduledTime: new Date(Date.now() + 1000 * 60 * 60 * 3).toISOString(), // 3 hours from now
+    scheduledTime: new Date(Date.now()).toISOString(), 
     duration: "60 mins",
     type: "AI-Proctored System Design"
   };
@@ -50,9 +51,9 @@ const InterviewCard = ({ interview, onJoin }) => {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ scale: 1.005, borderColor: isLive ? '#a855f7' : '#27272a' }}
-      className="w-full bg-zinc-950 border border-white/5 rounded-3xl overflow-hidden shadow-2xl transition-colors duration-300"
+      className="max-w-screen bg-zinc-950 border border-white/5 rounded-3xl overflow-hidden shadow-2xl transition-colors duration-300"
     >
-      <div className="flex flex-col lg:flex-row items-stretch min-h-[120px]">
+      <div className="flex flex-col lg:flex-row items-stretch min-h-30">
         
         {/* STATUS INDICATOR (Law of Similarity) */}
         <div className={`w-full lg:w-2 flex items-center justify-center ${isLive ? 'bg-purple-600 animate-pulse' : 'bg-zinc-800'}`} />
@@ -92,7 +93,7 @@ const InterviewCard = ({ interview, onJoin }) => {
               </span>
             </div>
 
-            <div className="flex flex-col min-w-[120px]">
+            <div className="flex flex-col min-w-30">
               <span className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest mb-1">Countdown</span>
               <span className={`font-mono text-lg font-black tracking-tighter ${isLive ? 'text-purple-400' : 'text-zinc-300'}`}>
                 {timeLeft}
@@ -102,8 +103,8 @@ const InterviewCard = ({ interview, onJoin }) => {
 
           {/* ACTION BUTTON (Fitts's Law) */}
           <div className="w-full md:w-auto md:ml-4">
-            <button
-              onClick={onJoin}
+            <NavLink
+              to={`/callview/${data.id}`}
               disabled={!isLive}
               className={`w-full md:w-auto px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 overflow-hidden relative group/btn ${
                 isLive 
@@ -121,9 +122,9 @@ const InterviewCard = ({ interview, onJoin }) => {
               
               {/* Animated hover gloss (Aesthetic-Usability) */}
               {isLive && (
-                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite]" />
+                <div className="absolute inset-0 w-full h-full bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite]" />
               )}
-            </button>
+            </NavLink>
           </div>
         </div>
       </div>
@@ -131,40 +132,5 @@ const InterviewCard = ({ interview, onJoin }) => {
   );
 };
 
-// Main Page Layout Mockup
-const CandidateDashboard = () => {
-  return (
-    <div className="min-h-screen bg-black flex flex-col items-center py-20 px-6">
-      {/* Container restricted to 80% width on large screens */}
-      <div className="w-full lg:w-[80%] flex flex-col gap-6">
-        
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-white text-3xl font-black tracking-tighter">
-            Your <span className="text-purple-500">Interviews</span>
-          </h2>
-          <div className="px-4 py-1 rounded-full bg-zinc-900 border border-white/10 text-zinc-500 text-xs font-bold">
-            2 Total Sessions
-          </div>
-        </div>
-
-        {/* Live Example */}
-        <InterviewCardWide 
-          interview={{
-            jobTitle: "Senior AI Full-Stack Developer",
-            interviewer: "Sarah Mitchell",
-            scheduledTime: new Date(Date.now() - 1000).toISOString(),
-            duration: "45 mins",
-            type: "Technical Deep Dive"
-          }}
-          onJoin={() => console.log("Joining live room...")}
-        />
-
-        {/* Scheduled Example */}
-        <InterviewCardWide />
-
-      </div>
-    </div>
-  );
-};
 
 export default InterviewCard;

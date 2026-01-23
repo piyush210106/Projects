@@ -1,20 +1,19 @@
-import { baseApi } from "./BaseApi";
-
+import {baseApi} from "./BaseApi.js";
 const candidateApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
 
         getInternalJobs: builder.query({
-            query: () => "/candidate/injobs",
+            query: () => "/candidate/getinjobs",
             providesTags: ["InternalJobs"]
         }),
 
         getExternalJobs: builder.query({
-            query: () => "/candidate/exjobs",
+            query: () => "/candidate/getexjobs",
             providesTags: ["ExternalJobs"]
         }),
 
         getAppliedJobs: builder.query({
-            query: () => "/candidate/appliedjobs",
+            query: () => "/candidate/getappliedjobs",
             providesTags: ["AppliedJobs"]
         }),
 
@@ -24,10 +23,10 @@ const candidateApi = baseApi.injectEndpoints({
         }),
 
         applyJob: builder.mutation({
-            query: ({job_id}) => ({
+            query: (job_id) => ({
                 url: "/candidate/applyjob",
                 method: "POST",
-                data: {job_id}
+                body: job_id
             }),
             invalidatesTags: ["AppliedJobs"]
         })
@@ -40,3 +39,4 @@ export const {useGetInternalJobsQuery,
         useGetInterviewsCanQuery,
         useApplyJobMutation 
         } = candidateApi;
+

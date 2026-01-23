@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAddJobMutation } from '../../store/RecruiterApi.js';
 import { 
   FiBriefcase, FiMapPin, FiDollarSign, FiPlus, 
   FiTrash2, FiArrowRight, FiArrowLeft, FiCheck, 
@@ -8,11 +9,13 @@ import {
 
 
 const AddJob = () => {
+  const [addJob, {isLoading}] = useAddJobMutation();
+
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
-    title: '', company: '', department: '', description: '',
+    title: '', department: '', description: '',
     requirements: [''], responsibilities: [''],
-    qualifications: { education: '', experienceYears: 0, skills: [''] },
+    qualifications: { education: '', experienceYears: 0},
     location: { city: '', state: '', country: '', remote: false, hybrid: false },
     salary: { min: 0, max: 0, currency: 'USD' },
     employmentType: 'full-time', openings: 1
@@ -24,7 +27,12 @@ const AddJob = () => {
   const handleNext = () => currentStep < totalSteps && setCurrentStep(prev => prev + 1);
   const handleBack = () => currentStep > 1 && setCurrentStep(prev => prev - 1);
 
-  // Dynamic Array Handlers (Requirements, Responsibilities, Skills)
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+    console.log(formData);
+    await addJob(formData);
+  };
+
   const handleArrayUpdate = (field, index, value, nestedField = null) => {
     setFormData(prev => {
       const newData = { ...prev };
@@ -106,10 +114,6 @@ const AddJob = () => {
                 </div>
               </div>
               <div>
-                <label className={labelClass}>Company Name</label>
-                <input className={inputClass} placeholder="e.g. Neural Dynamics Inc." value={formData.company} onChange={(e) => setFormData({...formData, company: e.target.value})} />
-              </div>
-              <div>
                 <label className={labelClass}>Description</label>
                 <textarea className={`${inputClass} h-40 resize-none`} placeholder="Describe the mission..." value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} />
               </div>
@@ -174,6 +178,14 @@ const AddJob = () => {
                   <label className={labelClass}>City</label>
                   <input className={inputClass} value={formData.location.city} onChange={(e) => setFormData({...formData, location: {...formData.location, city: e.target.value}})} />
                 </div>
+                <div>
+                  <label className={labelClass}>State</label>
+                  <input className={inputClass} value={formData.location.state} onChange={(e) => setFormData({...formData, location: {...formData.location, state: e.target.value}})} />
+                </div>
+                <div>
+                  <label className={labelClass}>Country</label>
+                  <input className={inputClass} value={formData.location.country} onChange={(e) => setFormData({...formData, location: {...formData.location, country: e.target.value}})} />
+                </div>
                 <div className="flex items-center gap-6 md:col-span-2 mt-6">
                   <label className="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" className="hidden" checked={formData.location.remote} onChange={() => setFormData({...formData, location: {...formData.location, remote: !formData.location.remote}})} />
@@ -207,18 +219,6 @@ const AddJob = () => {
                   <input type="number" className={inputClass} value={formData.qualifications.experienceYears} onChange={(e) => setFormData({...formData, qualifications: {...formData.qualifications, experienceYears: e.target.value}})} />
                 </div>
               </div>
-              <div>
-                <label className={labelClass}>Required Skills</label>
-                <div className="flex flex-wrap gap-3">
-                  {formData.qualifications.skills.map((skill, i) => (
-                    <div key={i} className="flex gap-2">
-                      <input className="bg-zinc-900 border border-white/5 rounded-lg px-4 py-2 text-sm outline-none focus:border-purple-500" value={skill} onChange={(e) => handleArrayUpdate(null, i, e.target.value, 'skills')} />
-                      <button onClick={() => removeArrayItem(null, i, 'skills')} className="text-zinc-600 hover:text-red-500 transition-colors"><FiTrash2 size={14} /></button>
-                    </div>
-                  ))}
-                  <button onClick={() => addArrayItem(null, 'skills')} className="px-4 py-2 border border-dashed border-zinc-700 rounded-lg text-xs font-bold text-zinc-500 hover:border-purple-500 hover:text-purple-500 transition-all">+ Add Skill</button>
-                </div>
-              </div>
               <div className="p-6 bg-purple-900/10 border border-purple-500/20 rounded-2xl flex items-center gap-4">
                  <FiCpu className="text-purple-500 animate-pulse" size={24} />
                  <p className="text-xs text-purple-300 font-medium">InterVue AI will now analyze these parameters to shortlist top-tier candidates automatically.</p>
@@ -237,7 +237,7 @@ const AddJob = () => {
             </button>
 
             <button 
-              onClick={currentStep === totalSteps ? () => alert("Job Published!") : handleNext}
+              onClick={currentStep === totalSteps ? () => handleSubmit() : handleNext}
               className="bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-xl font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-purple-900/20 active:scale-95 transition-all flex items-center gap-3"
             >
               {currentStep === totalSteps ? 'Finalize & Publish' : 'Continue Phase'}

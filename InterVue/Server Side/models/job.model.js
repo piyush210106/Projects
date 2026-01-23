@@ -31,17 +31,13 @@ const jobSchema = new mongoose.Schema({
     }],
     qualifications: {
         education: {
-        type: String,
-        trim: true
+            type: String,
+            trim: true
         },
         experienceYears: {
-        type: Number,
-        min: 0
-        },
-        skills: [{
-        type: String,
-        trim: true
-        }]
+            type: Number,
+            min: 0
+        }
     },
     location: {
         city: String,

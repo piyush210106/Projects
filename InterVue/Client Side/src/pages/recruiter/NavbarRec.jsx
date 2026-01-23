@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { NavLink } from 'react-router-dom';
 import { 
   FiPlusCircle, 
   FiVideo, 
@@ -15,10 +16,9 @@ import {
 
 const NavbarRec = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('Interviews');
+  const [activeTab, setActiveTab] = useState('AddJob');
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Aesthetic-Usability: Subtle shadow/blur on scroll
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll);
@@ -26,9 +26,9 @@ const NavbarRec = () => {
   }, []);
 
   const menuItems = [
-    { name: 'AddJob', icon: <FiPlusCircle />, label: 'Add Job' },
-    { name: 'Interviews', icon: <FiVideo />, label: 'Interviews' },
-    { name: 'Applications', icon: <FiFileText />, label: 'Applications' },
+    { name: 'AddJob', icon: <FiPlusCircle />, label: 'Add Job', path:"/recruiter/addjob" },
+    { name: 'Interviews', icon: <FiVideo />, label: 'Interviews', path:"/recruiter/interviews" },
+    { name: 'Applications', icon: <FiFileText />, label: 'Applications', path:"/recruiter/applications" },
   ];
 
   return (
@@ -37,7 +37,6 @@ const NavbarRec = () => {
     }`}>
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         
-        {/* LOGO (Jakob's Law: Standard left placement) */}
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -54,10 +53,10 @@ const NavbarRec = () => {
           </span>
         </motion.div>
 
-        {/* NAV LINKS (Law of Similarity & Miller's Law) */}
         <div className="hidden md:flex items-center gap-2 bg-zinc-900/50 p-1.5 rounded-2xl border border-white/5">
           {menuItems.map((item) => (
-            <button
+            <NavLink
+              to={item.path}
               key={item.name}
               onClick={() => setActiveTab(item.name)}
               className={`relative px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all duration-200 ${
@@ -74,7 +73,7 @@ const NavbarRec = () => {
                   transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />
               )}
-            </button>
+            </NavLink>
           ))}
         </div>
 
@@ -88,7 +87,7 @@ const NavbarRec = () => {
           <div className="h-8 w-px bg-white/10 mx-2" />
           
           <button className="flex items-center gap-3 pl-2 pr-1 py-1 rounded-full bg-zinc-900 border border-white/5 hover:border-purple-500/50 transition-all group">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-purple-400 flex items-center justify-center font-bold text-xs">
+            <div className="w-8 h-8 rounded-full bg-linear-to-tr from-purple-600 to-purple-400 flex items-center justify-center font-bold text-xs">
               JD
             </div>
             <span className="text-sm font-bold text-zinc-300 group-hover:text-white transition-colors">Jane Doe</span>
@@ -116,7 +115,8 @@ const NavbarRec = () => {
           >
             <div className="flex flex-col p-6 gap-4">
               {menuItems.map((item) => (
-                <button
+                <NavLink
+                  to={item.path}
                   key={item.name}
                   onClick={() => {
                     setActiveTab(item.name);
@@ -130,7 +130,7 @@ const NavbarRec = () => {
                 >
                   <span className="text-xl">{item.icon}</span>
                   {item.label}
-                </button>
+                </NavLink>
               ))}
               <div className="h-px bg-white/5 my-2" />
               <button className="flex items-center justify-between p-4 bg-zinc-900 rounded-2xl border border-white/5">

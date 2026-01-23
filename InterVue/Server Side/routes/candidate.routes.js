@@ -13,4 +13,5 @@ candidateRouter.route("/getexjobs").get(verifyIdToken, getInternalJobs);
 candidateRouter.route("/getappliedjobs").get(verifyIdToken, getAppliedJobs);
 candidateRouter.route("/joininterview").get(verifyIdToken, joinInterviewCandidate);
 candidateRouter.route("/applyjob").get(verifyIdToken, applyJob);
+
 export {candidateRouter}

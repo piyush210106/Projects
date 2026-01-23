@@ -1,5 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { NavLink } from 'react-router-dom';
+import ApplicationView from './ApplicationView.jsx';
 import { 
   FiUser, 
   FiBriefcase, 
@@ -11,15 +13,10 @@ import {
   FiStar
 } from 'react-icons/fi';
 
-/**
- * InterVue - Recruiter: Candidate Application Row Card
- * Layout: Horizontal (80% Width Optimized)
- * UX Laws: Miller's Law (Data Chunking), Aesthetic-Usability, Fitts's Law.
- */
 
-const ApplicationCard = ({ applicant, onClick }) => {
-  // Standardized Mock Data based on your platform needs
-  const data = applicant || {
+const ApplicationCard = (applicant) => {
+  const data = {
+    id: 1,
     name: "Alex Rivera",
     email: "alex.rivera@dev.io",
     jobTitle: "Senior AI Engineer",
@@ -35,11 +32,10 @@ const ApplicationCard = ({ applicant, onClick }) => {
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       whileHover={{ scale: 1.005, borderColor: '#a855f7' }}
-      onClick={onClick}
-      className="w-full lg:w-[80%] mx-auto bg-zinc-950 border border-white/5 rounded-3xl p-5 md:p-6 cursor-pointer transition-all duration-300 shadow-xl group relative overflow-hidden mb-4"
+      className="max-w-6xl mx-auto bg-zinc-950 border border-white/5 rounded-3xl p-5 md:p-6 cursor-pointer transition-all duration-300 shadow-xl group relative overflow-hidden mb-4"
     >
       {/* Aesthetic Usability: Ambient Score Glow */}
-      <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-purple-600/5 to-transparent pointer-events-none" />
+      <div className="absolute top-0 right-0 w-32 h-full bg-linear-to-l from-purple-600/5 to-transparent pointer-events-none" />
 
       <div className="flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
         
@@ -102,15 +98,15 @@ const ApplicationCard = ({ applicant, onClick }) => {
 
         {/* SECTION 4: ACTION (Fitts's Law - Large Target) */}
         <div className="lg:ml-4 flex items-center">
-          <div className="w-12 h-12 rounded-2xl bg-zinc-900 group-hover:bg-purple-600 flex items-center justify-center text-zinc-600 group-hover:text-white transition-all duration-300 shadow-lg group-hover:shadow-purple-500/40">
+          <NavLink to={`/application/${data.id}`} className="w-12 h-12 rounded-2xl bg-zinc-900 group-hover:bg-purple-600 flex items-center justify-center text-zinc-600 group-hover:text-white transition-all duration-300 shadow-lg group-hover:shadow-purple-500/40">
             <FiArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-          </div>
+          </NavLink>
         </div>
 
       </div>
 
       {/* FOOTER: Skills Preview (Law of Similarity) */}
-      <div className="hidden md:flex flex-wrap gap-2 mt-4 ml-[76px]">
+      <div className="hidden md:flex flex-wrap gap-2 mt-4 ml-19">
         {data.skills.map((skill, i) => (
           <span key={i} className="text-[10px] font-bold text-zinc-500 border border-zinc-900 px-2 py-0.5 rounded uppercase hover:border-purple-500/30 transition-colors">
             {skill}
@@ -121,53 +117,5 @@ const ApplicationCard = ({ applicant, onClick }) => {
   );
 };
 
-// Application Feed Container
-const ApplicationFeed = () => {
-  return (
-    <div className="min-h-screen bg-black flex flex-col items-center py-20 px-6">
-      <div className="w-full lg:w-[80%] mb-10 flex flex-col md:flex-row justify-between items-end gap-4">
-        <div>
-          <h2 className="text-3xl font-black text-white tracking-tighter">
-            Incoming <span className="text-purple-500">Applications</span>
-          </h2>
-          <p className="text-zinc-500 text-sm font-medium">Real-time candidate pipeline analyzed by InterVue AI</p>
-        </div>
-        <div className="flex gap-4">
-           {/* Hick's Law: Collapsed filters */}
-           <button className="px-4 py-2 bg-zinc-900 border border-white/5 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition-all uppercase tracking-widest">
-             Filter By Score
-           </button>
-        </div>
-      </div>
-
-      {/* Render List */}
-      <CandidateApplicationCard />
-      <CandidateApplicationCard 
-        applicant={{
-          name: "Jordan Vance",
-          email: "j.vance@neural.com",
-          jobTitle: "Senior AI Engineer",
-          appliedDate: "Oct 25, 2025",
-          experience: "5 Years",
-          aiScore: 82,
-          status: "Under Review",
-          skills: ["TensorFlow", "Golang", "AWS", "Docker"]
-        }}
-      />
-      <CandidateApplicationCard 
-        applicant={{
-          name: "Sophia Lin",
-          email: "slin@mit.edu",
-          jobTitle: "Product Designer",
-          appliedDate: "Oct 26, 2025",
-          experience: "3 Years",
-          aiScore: 91,
-          status: "Shortlisted",
-          skills: ["Figma", "Design Systems", "Framer", "UI/UX"]
-        }}
-      />
-    </div>
-  );
-};
 
 export default ApplicationCard;
