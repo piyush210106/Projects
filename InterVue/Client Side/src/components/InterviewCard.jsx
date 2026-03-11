@@ -39,7 +39,7 @@ const InterviewCard = (interview) => {
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date();
-      const scheduled = new Date();
+      const scheduled = new Date(date);
       const diff = scheduled - now;
 
       if (diff <= 0) {

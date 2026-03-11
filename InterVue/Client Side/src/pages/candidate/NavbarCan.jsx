@@ -51,6 +51,10 @@ const NavbarCan = () => {
           <span className="text-2xl font-black tracking-tighter text-white">
             Inter<span className="text-purple-500">Vue</span>
           </span>
+          <span className="hidden sm:block ml-2 px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-[10px] font-black uppercase tracking-widest text-zinc-500">
+            Candidate
+          </span>
+
         </motion.div>
 
         {/* DESKTOP LINKS (Law of Similarity & Proximity) */}

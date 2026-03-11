@@ -42,7 +42,7 @@ const InterviewsRec = () => {
   const interviews = data?.interviews;
 
   return (
-    <div className="min-h-screen text-white font-sans selection:bg-purple-500/40 p-6 md:p-12 max-w-screen">
+    <div className="min-h-screen text-white font-sans selection:bg-purple-500/40 p-6 md:p-12 max-w-screen py-16">
       
       {/* HEADER: Focus on Upcoming Interviews (Fills Zeigarnik need) */}
       <header className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">

@@ -16,11 +16,6 @@ import {
 import { googleLogin } from '../auth/authService.js';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
-/**
- * InterVue - AI Interview Management Platform
- * Single-file landing page component
- * Tech: React, Tailwind CSS, Framer Motion
- */
 
 const Landing = () => {
 
@@ -41,11 +36,9 @@ const Landing = () => {
         );
 
         if(res.data.onboardingRequired){
-          console.log("Onboarding required");
           navigate(`${res.data.role}/signUp`);
         }
         else{
-          console.log("Login Successful");
             if(res.data.role === "candidate") navigate(`${res.data.role}/injobs`);
             else navigate(`/recruiter/addjob`);
         }
@@ -72,7 +65,7 @@ const Landing = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-purple-500/30">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-purple-500/30 py-16">
       
       {/* --- NAVIGATION (Jakob's Law: Familiar placement) --- */}
       <nav className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-purple-900/20">
@@ -89,12 +82,6 @@ const Landing = () => {
             <a href="#features" className="hover:text-purple-400 transition-colors">Features</a>
             <a href="#ai" className="hover:text-purple-400 transition-colors">AI Engine</a>
             <a href="#video" className="hover:text-purple-400 transition-colors">Video Call</a>
-            <button className="px-5 py-2 rounded-full border border-purple-500/50 text-purple-400 hover:bg-purple-500/10 transition-all">
-              Book Demo
-            </button>
-            <button className="px-5 py-2 rounded-full bg-purple-600 text-white hover:bg-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all">
-              Try InterVue
-            </button>
             <button onClick={() => handleLogin("recruiter")} className="px-5 py-2 rounded-full bg-purple-600 text-white hover:bg-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all">
               Recruiter
             </button >
@@ -442,9 +429,6 @@ const Landing = () => {
             </ul>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/5 text-center text-zinc-600 text-xs">
-          © 2026 InterVue Systems Inc. All rights reserved. Built with precision for the future of work.
-        </div>
       </footer>
 
       {/* Mobile Menu Overlay */}
@@ -454,7 +438,7 @@ const Landing = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-[60] bg-black p-6 flex flex-col"
+            className="fixed inset-0 z-60 bg-black p-6 flex flex-col"
           >
             <div className="flex justify-between items-center mb-12">
                <span className="text-2xl font-bold">Inter<span className="text-purple-500">Vue</span></span>

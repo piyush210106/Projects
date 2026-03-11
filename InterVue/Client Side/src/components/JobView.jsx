@@ -22,9 +22,7 @@ const JobView = () => {
 
   const handleApply = async(e) => {
     try {
-        console.log(id);
         const res = await applyJob(id).unwrap();
-        console.log(res);
     } catch (err) {
         console.error(err);
     }

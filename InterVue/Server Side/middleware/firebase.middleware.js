@@ -2,7 +2,6 @@ import {admin} from "../config/firebase.config.js";
 
 const verifyIdToken = async (req, res, next) => {
     try {
-        console.log("Middleware started");
         let token = null;
         if (req.headers.authorization?.startsWith("Bearer ")) {
             token = req.headers.authorization.split(" ")[1];

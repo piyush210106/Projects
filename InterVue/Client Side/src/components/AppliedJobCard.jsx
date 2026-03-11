@@ -18,7 +18,7 @@ export default function AppliedJobCard(application) {
     const formattedDate = date.toLocaleDateString("en-IN");
 
   return (
-    <div className="w-full min-h-screen bg-black p-4 md:p-6 font-sans antialiased text-white">
+    <div className="w-full bg-black p-4 md:p-4 font-sans antialiased text-white">
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}

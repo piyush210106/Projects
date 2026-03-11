@@ -21,10 +21,10 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const socialLinks = [
-    { icon: <FiGithub />, label: "GitHub", href: "#" },
-    { icon: <FiLinkedin />, label: "LinkedIn", href: "#" },
+    { icon: <FiGithub />, label: "GitHub", href: "https://github.com/piyush210106" },
+    { icon: <FiLinkedin />, label: "LinkedIn", href: "https://www.linkedin.com/in/piyush-garg-8733b5319" },
     { icon: <FiTwitter />, label: "Twitter", href: "#" },
-    { icon: <FiMail />, label: "Email", href: "mailto:creator@intervue.io" },
+    { icon: <FiMail />, label: "Email", href: "mailto:piyushgarg2101@gmail.com" },
   ];
 
   const fadeInUp = {
@@ -37,7 +37,7 @@ const Footer = () => {
   return (
     <footer className="relative bg-black text-white pt-24 pb-12 px-6 overflow-hidden border-t border-white/5">
       {/* Ambient background glow (Aesthetic-Usability) */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-[300px] bg-purple-600/10 blur-[120px] rounded-full -z-10" />
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-75 bg-purple-600/10 blur-[120px] rounded-full -z-10" />
 
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8 items-start">
@@ -53,7 +53,7 @@ const Footer = () => {
             
             <h2 className="text-3xl md:text-4xl font-black leading-tight tracking-tighter">
               Engineering the <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-white">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-400 to-white">
                 Future of Recruitment.
               </span>
             </h2>
@@ -72,7 +72,7 @@ const Footer = () => {
             <div className="space-y-4">
               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-purple-500">The Architect</p>
               <div className="space-y-2">
-                <p className="text-xl font-bold">Your Name</p>
+                <p className="text-xl font-bold">Piyush Garg</p>
                 <p className="text-zinc-500 text-xs flex items-center gap-2">
                   <FiCode className="text-purple-400" /> Full Stack Developer
                 </p>
@@ -85,7 +85,7 @@ const Footer = () => {
             <div className="space-y-4">
               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-purple-500">Tech Stack</p>
               <div className="flex flex-wrap gap-2">
-                {['React', 'Vite', 'Node', 'Mongoose'].map((tech) => (
+                {['React', 'Vite', 'Node', 'Mongoose', 'Express', 'TailWind CSS', 'SQL', 'LangChain'].map((tech) => (
                   <span key={tech} className="px-2 py-1 bg-zinc-900 border border-white/5 rounded text-[10px] font-bold text-zinc-400">
                     {tech}
                   </span>

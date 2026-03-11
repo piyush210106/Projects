@@ -41,7 +41,6 @@ const CallView = () => {
     };
   }, [interviewId]);
   const endCall = () => {
-    console.log("Inside End");
     cleanup();
     if(role === "candidate") navigate("/candidate/interviews");
     else navigate("/recruiter/interviews");

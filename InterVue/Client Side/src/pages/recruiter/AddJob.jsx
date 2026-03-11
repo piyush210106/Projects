@@ -29,8 +29,16 @@ const AddJob = () => {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log(formData);
     await addJob(formData);
+    setFormData({
+      title: '', department: '', description: '',
+      requirements: [''], responsibilities: [''],
+      qualifications: { education: '', experienceYears: 0},
+      location: { city: '', state: '', country: '', remote: false, hybrid: false },
+      salary: { min: 0, max: 0, currency: 'USD' },
+      employmentType: 'full-time', openings: 1
+    });
+    setCurrentStep(1);
   };
 
   const handleArrayUpdate = (field, index, value, nestedField = null) => {
@@ -67,7 +75,7 @@ const AddJob = () => {
   const labelClass = "block text-zinc-400 text-xs font-bold uppercase tracking-widest mb-2 ml-1";
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-purple-500/30 py-12 px-6 relative overflow-hidden">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-purple-500/30 py-16 px-6 relative overflow-hidden">
       {/* Background Decor */}
       <div className="absolute top-0 right-0 w-125 h-125 bg-purple-600/5 blur-[120px] rounded-full -z-10" />
       
@@ -217,6 +225,10 @@ const AddJob = () => {
                 <div>
                   <label className={labelClass}>Experience (Years)</label>
                   <input type="number" className={inputClass} value={formData.qualifications.experienceYears} onChange={(e) => setFormData({...formData, qualifications: {...formData.qualifications, experienceYears: e.target.value}})} />
+                </div>
+                <div>
+                  <label className={labelClass}>Opening</label>
+                  <input type="number" className={inputClass} value={formData.openings} onChange={(e) => setFormData({...formData, openings: e.target.value})} />
                 </div>
               </div>
               <div className="p-6 bg-purple-900/10 border border-purple-500/20 rounded-2xl flex items-center gap-4">

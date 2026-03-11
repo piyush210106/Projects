@@ -32,8 +32,7 @@ const ApplicationView = () => {
       applicationId: application._id,
       data: scheduleData
     }).unwrap();
-    console.log(res);
-    isScheduling(false);
+    setIsScheduling(false);
     setIsSubmitting(false);
   };
 

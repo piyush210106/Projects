@@ -68,7 +68,7 @@ const SignUpCan = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6 selection:bg-purple-500/30">
+    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6 selection:bg-purple-500/30 py-16">
       
       {/* Background Decor */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-125 h-125 bg-purple-600/10 blur-[120px] rounded-full -z-10" />

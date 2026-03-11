@@ -86,13 +86,13 @@ const NavbarRec = () => {
           
           <div className="h-8 w-px bg-white/10 mx-2" />
           
-          <button className="flex items-center gap-3 pl-2 pr-1 py-1 rounded-full bg-zinc-900 border border-white/5 hover:border-purple-500/50 transition-all group">
+          {/* <button className="flex items-center gap-3 pl-2 pr-1 py-1 rounded-full bg-zinc-900 border border-white/5 hover:border-purple-500/50 transition-all group">
             <div className="w-8 h-8 rounded-full bg-linear-to-tr from-purple-600 to-purple-400 flex items-center justify-center font-bold text-xs">
               JD
             </div>
             <span className="text-sm font-bold text-zinc-300 group-hover:text-white transition-colors">Jane Doe</span>
             <FiChevronDown className="mr-2 text-zinc-600 group-hover:text-purple-400 transition-colors" />
-          </button>
+          </button> */}
         </div>
 
         {/* MOBILE TOGGLE (Hick's Law: Simple interface) */}
@@ -133,13 +133,13 @@ const NavbarRec = () => {
                 </NavLink>
               ))}
               <div className="h-px bg-white/5 my-2" />
-              <button className="flex items-center justify-between p-4 bg-zinc-900 rounded-2xl border border-white/5">
+              {/* <button className="flex items-center justify-between p-4 bg-zinc-900 rounded-2xl border border-white/5">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center font-bold">JD</div>
                   <span className="font-bold text-white uppercase tracking-tighter">Jane Doe</span>
                 </div>
                 <span className="text-purple-400 text-xs font-black uppercase tracking-widest">Profile</span>
-              </button>
+              </button> */}
             </div>
           </motion.div>
         )}

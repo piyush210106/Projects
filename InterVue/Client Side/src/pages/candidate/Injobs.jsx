@@ -24,7 +24,7 @@ export default function InJobs() {
   );
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-[#a855f7] selection:text-white py-12">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-[#a855f7] selection:text-white py-16">
       
       <main className="max-w-6xl mx-auto px-6 py-12">
         

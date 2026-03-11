@@ -19,7 +19,7 @@ const Applications = () => {
     app.candidateId.profile.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-purple-500/30 p-6 md:p-12">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-purple-500/30 p-6 md:p-12 py-16">
       {/* Background Decor */}
       <div className="fixed top-0 right-0 w-125 h-125 bg-purple-600/5 blur-[120px] rounded-full -z-10" />
 
@@ -58,6 +58,7 @@ const Applications = () => {
             ) : (
               filteredApps.map((app) => (
                 <ApplicationCard
+                  key = {app._id}
                   applicant = {app}  
                 />
               ))

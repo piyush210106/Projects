@@ -26,7 +26,6 @@ const addJob = async(req, res) => {
             postedBy: user._id,
             openings: jobData.openings
         })
-        console.log("Job added");
         return res.status(200).json({message: "Job successfully added!!"});
     } catch (error) {
         console.log("Error in adding job", error);
@@ -73,7 +72,6 @@ const scheduleInterview = async(req, res) => {
                 roomUrl,
             }
         });
-        console.log("Interview Scheduled");
         return res.status(200).json({message: "Interview Scheduled"});
 
     } catch (error) {
@@ -101,7 +99,6 @@ const getApplications = async (req, res) => {
             .populate("resume")
             .exec();
         const filteredApplications = applications.filter(app => app.jobId && app.jobId.postedBy.toString() !== userId);
-        console.log(filteredApplications);
             return res.status(200).json({
                 message: "Required Applications",
                 filteredApplications
