@@ -1,7 +1,7 @@
 from db.pinecone import index
 from db.mongo import applications
 from utils.cosine import cosine_similarity
-from app.utils.analyze_resume import analyze_resume_with_gemini
+from utils.analyze_resume import analyze_resume_with_gemini
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 def get_embedding_model():

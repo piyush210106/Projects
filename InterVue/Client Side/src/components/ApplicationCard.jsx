@@ -15,6 +15,9 @@ import {
 
 
 const ApplicationCard = (applicant) => {
+  const application = applicant?.applicant;
+  const candidate = application?.candidateId;
+  const job = application?.jobId;
   const data = {
     id: 1,
     name: "Alex Rivera",
@@ -43,17 +46,16 @@ const ApplicationCard = (applicant) => {
         <div className="flex items-center gap-5 flex-1 min-w-0">
           <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center text-zinc-400 group-hover:text-purple-400 transition-colors shadow-inner overflow-hidden">
             {/* Initial placeholder or Profile Icon */}
-            <span className="text-xl font-black">{data.name.charAt(0)}</span>
+            <span className="text-xl font-black">{candidate?.profile?.name.charAt(0)}</span>
           </div>
           
           <div className="truncate">
             <h3 className="text-xl font-black text-white group-hover:text-purple-400 transition-colors tracking-tight truncate">
-              {data.name}
+              {candidate?.profile?.name}
             </h3>
             <div className="flex items-center gap-3 mt-1 text-zinc-500 text-sm font-medium">
-              <span className="flex items-center gap-1.5"><FiLinkedin size={14}/> Profile</span>
-              <span className="text-zinc-800">|</span>
-              <span className="truncate">{data.email}</span>
+              <a href={`https://${candidate.profile.linkedinUrl}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5"><FiLinkedin size={14}/> Profile</a>              <span className="text-zinc-800">|</span>
+              <span className="truncate">{candidate?.email}</span>
             </div>
           </div>
         </div>
@@ -63,13 +65,13 @@ const ApplicationCard = (applicant) => {
           <div className="flex flex-col">
             <span className="text-[10px] text-zinc-600 font-black uppercase tracking-widest mb-1">Target Role</span>
             <span className="text-zinc-300 font-bold flex items-center gap-2 text-sm">
-              <FiBriefcase className="text-purple-500" size={14} /> {data.jobTitle}
+              <FiBriefcase className="text-purple-500" size={14} /> {job?.title}
             </span>
           </div>
 
           <div className="flex flex-col">
             <span className="text-[10px] text-zinc-600 font-black uppercase tracking-widest mb-1">Experience</span>
-            <span className="text-zinc-300 font-bold text-sm">{data.experience}</span>
+            <span className="text-zinc-300 font-bold text-sm">{job?.qualifications?.experienceYears}</span>
           </div>
         </div>
 
@@ -98,7 +100,7 @@ const ApplicationCard = (applicant) => {
 
         {/* SECTION 4: ACTION (Fitts's Law - Large Target) */}
         <div className="lg:ml-4 flex items-center">
-          <NavLink to={`/application/${data.id}`} className="w-12 h-12 rounded-2xl bg-zinc-900 group-hover:bg-purple-600 flex items-center justify-center text-zinc-600 group-hover:text-white transition-all duration-300 shadow-lg group-hover:shadow-purple-500/40">
+          <NavLink to={`/application/${application._id}`} className="w-12 h-12 rounded-2xl bg-zinc-900 group-hover:bg-purple-600 flex items-center justify-center text-zinc-600 group-hover:text-white transition-all duration-300 shadow-lg group-hover:shadow-purple-500/40">
             <FiArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </NavLink>
         </div>

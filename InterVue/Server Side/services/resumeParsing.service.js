@@ -1,12 +1,12 @@
 import axios from "axios";
 
-const triggerAIprocessing = ({resume_id, resumeUrl, firebaseUid}) => {
-    axios.post("http://ai-service:8000/process-resume",
+const triggerAIprocessing = ({resume_id, resume_url, firebase_uid}) => {
+    console.log(process.env.AI_INTERNAL_SECRET);
+    axios.post("http://localhost:8000/process-resume",
                 {
-                    resume_id, resumeUrl, firebaseUid,
+                    resume_id, resume_url, firebase_uid,
                 },
                 {
-                    timeout: 3000, 
                     headers: {
                         "Content-Type": "application/json",
                         "X-Internal-Secret": process.env.AI_INTERNAL_SECRET, 

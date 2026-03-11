@@ -12,58 +12,15 @@ import {
   FiCheckCircle 
 } from 'react-icons/fi';
 
-const JOBS_DATA = [
-  {
-    id: 1,
-    title: "Lead AI Engineer",
-    department: "Engineering",
-    location: "Remote / San Francisco",
-    type: "Full-time",
-    salary: "$160k - $210k",
-    description: "Help us refine the LLM kernels that power InterVue's real-time sentiment analysis.",
-    requirements: ["5+ years Python/PyTorch", "Experience with OpenAI API", "Vector DB knowledge"]
-  },
-  {
-    id: 2,
-    title: "Senior Product Designer",
-    department: "Design",
-    location: "London, UK",
-    type: "Full-time",
-    salary: "£80k - £110k",
-    description: "Own the end-to-end candidate experience. We value aesthetic usability and futuristic UI.",
-    requirements: ["Figma Mastery", "Prototyping", "UX Research"]
-  },
-  {
-    id: 3,
-    title: "Backend Architect",
-    department: "Engineering",
-    location: "Remote",
-    type: "Contract",
-    salary: "$100 - $150 / hr",
-    description: "Scale our real-time WebSocket architecture to handle 100k+ concurrent interviews.",
-    requirements: ["Node.js/Go", "Redis", "Distributed Systems"]
-  },
-  {
-    id: 4,
-    title: "Growth Marketer",
-    department: "Marketing",
-    location: "New York, NY",
-    type: "Full-time",
-    salary: "$90k - $130k",
-    description: "Drive InterVue's adoption among Fortune 500 recruiters.",
-    requirements: ["SEO/SEM", "B2B SaaS Experience", "Data Analytics"]
-  }
-];
 
 export default function InJobs() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const {data: jobs, isLoading} = useGetInternalJobsQuery();
+  const {data, isLoading} = useGetInternalJobsQuery();
 
-
-  const filteredJobs = jobs.filter(job => 
-    job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    job.department.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredJobs = data?.jobs?.filter(job => 
+    job?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    job?.department?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -102,9 +59,9 @@ export default function InJobs() {
             ))
           ) : (
             <AnimatePresence mode='popLayout'>
-              {filteredJobs.map((job, index) => (
+              {filteredJobs?.map((job, index) => (
                 <JobCard 
-                  key={job.id} 
+                  key={job._id} 
                   job={job} 
                   index={index} 
                 />
@@ -113,7 +70,7 @@ export default function InJobs() {
           )}
         </div>
 
-        {!isLoading && filteredJobs.length === 0 && (
+        {!isLoading && filteredJobs?.length === 0 && (
           <div className="text-center py-20 text-gray-500">
             No positions found. Try a different search term.
           </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import InterviewCard from "../../components/InterviewCard.jsx";
-import {useGetInterviewsRecQuery} from "../../store/RecruiterApi.js";
+import {useGetInterviewsCanQuery} from "../../store/CandidateApi.js";
 
 const Waveform = () => (
   <div className="flex items-center gap-0.5 h-4">
@@ -34,13 +34,12 @@ const AnimatedVideoIcon = () => (
 );
 
 
-const InterviewsRec = () => {
+const InterviewsCan = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const {data, isLoading} = useGetInterviewsRecQuery();
+  const {data, isLoading} = useGetInterviewsCanQuery();
 
   if(!data) return <div>Loading...</div>
   const interviews = data?.interviews;
-
   return (
     <div className="min-h-screen text-white font-sans selection:bg-purple-500/40 p-6 md:p-12 max-w-screen">
       
@@ -58,7 +57,7 @@ const InterviewsRec = () => {
             </span>
           </h1>
           <p className="mt-4 text-gray-500 font-medium max-w-sm">
-            You have <span className="text-white">{interviews.length || 0} potential hires</span> waiting in the queue for evaluation.
+            You have <span className="text-white">{interviews.length || 0} potential oppurtunities</span> waiting in the queue for evaluation.
           </p>
         </motion.div>
 
@@ -83,7 +82,7 @@ const InterviewsRec = () => {
               [1, 2, 3].map(i => <div key={i} className="h-24 w-full bg-[#111] animate-pulse rounded-2xl" />)
             ) : (
               interviews
-                .filter(i => i.candidateId.profile.name.toLowerCase().includes(searchTerm.toLowerCase()))
+                .filter(i => i.JobId.title.toLowerCase().includes(searchTerm.toLowerCase()))
                 .map((interview) => <InterviewCard key={interview._id} interview={interview} />)
             )}
           </AnimatePresence>
@@ -95,4 +94,4 @@ const InterviewsRec = () => {
   );
 };
 
-export default InterviewsRec;
+export default InterviewsCan;

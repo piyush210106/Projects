@@ -1,55 +1,42 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
-import {useScheduleInterviewMutation} from "../store/RecruiterApi.js";
+import {useScheduleInterviewMutation, useGetApplicationsQuery} from "../store/RecruiterApi.js";
 import { 
   FiUser, FiBriefcase, FiDownload, FiCheckCircle, FiXCircle, 
   FiCpu, FiLinkedin, FiMail, FiMapPin, FiChevronLeft, 
   FiStar, FiTrendingUp, FiMessageCircle, FiZap, FiCalendar, FiClock, FiSend 
 } from 'react-icons/fi';
-
+import { useParams } from "react-router-dom";
 const ApplicationView = () => {
 
+  const {id} = useParams();
+  const {data} = useGetApplicationsQuery();
   const [schedule, {isLoading}] = useScheduleInterviewMutation();
+
+  const application = data?.filteredApplications?.find((j) => j._id.toString() === id);
+  const profile = application?.candidateId;
+  const aiScore = application?.aiScore;
+  const job = application?.jobId;
 
   const [isScheduling, setIsScheduling] = useState(false);
   const [scheduleData, setScheduleData] = useState({ date: '', time: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  if(!data) return <div>Loading...</div>
+
   const handleScheduleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    await schedule({
-      applicationId: applicantData.id,
+    const res = await schedule({
+      applicationId: application._id,
       data: scheduleData
-    });
+    }).unwrap();
+    console.log(res);
+    isScheduling(false);
+    setIsSubmitting(false);
   };
 
-  const applicantData = {
-    id: 1,
-    name: "Alex Rivera",
-    email: "alex.rivera@neural-dev.io",
-    phone: "+1 (555) 012-3456",
-    location: "Austin, TX",
-    experience: "8+ Years",
-    education: "M.S. in Computer Science, Stanford",
-    resumeUrl: "#",
-    linkedin: "linkedin.com/in/arivera",
-    jobDetails: {
-      title: "Senior AI Engineer",
-      department: "Core Intelligence",
-      company: "InterVue AI",
-      postedOn: "Jan 12, 2026"
-    },
-    aiScore: {
-      score: 92,
-      analysis: "Candidate shows exceptional mastery in neural architecture and real-time data streaming. Strong cultural fit for high-velocity engineering teams.",
-      matchedSkills: ["PyTorch", "React", "WebRTC", "Node.js", "Docker", "CUDA"],
-      missingSkills: ["Go (Golang)", "Kubernetes Operator Patterns"],
-      recommendations: "Proceed to Technical Interview. Focus on distributed systems scalability and Go-lang familiarity during the session.",
-      overallFit: "Excellent"
-    }
-  };
 
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
@@ -134,25 +121,22 @@ const ApplicationView = () => {
             <motion.section {...fadeInUp} className="bg-zinc-950 border border-white/5 rounded-[2.5rem] p-8 overflow-hidden relative">
               <div className="absolute top-0 right-0 p-6 opacity-10"><FiUser size={80}/></div>
               <div className="w-20 h-20 bg-purple-600 rounded-3xl mb-6 flex items-center justify-center text-3xl font-black shadow-2xl">
-                {applicantData.name.charAt(0)}
+                {profile?.profile?.name?.charAt(0)}
               </div>
-              <h1 className="text-3xl font-black mb-1">{applicantData.name}</h1>
-              <p className="text-purple-400 font-bold text-sm mb-6">{applicantData.experience} Experience</p>
+              <h1 className="text-3xl font-black mb-1">{profile?.profile?.name}</h1>
+              <p className="text-purple-400 font-bold text-sm mb-6">Unknown Experience</p>
               
               <div className="space-y-4">
                 <div className="flex items-center gap-3 text-zinc-400 text-sm">
-                  <FiMail className="text-purple-500" /> {applicantData.email}
+                  <FiMail className="text-purple-500" /> {profile?.email}
                 </div>
-                <div className="flex items-center gap-3 text-zinc-400 text-sm">
-                  <FiMapPin className="text-purple-500" /> {applicantData.location}
-                </div>
-                <div className="flex items-center gap-3 text-zinc-400 text-sm">
-                  <FiLinkedin className="text-purple-500" /> {applicantData.linkedin}
-                </div>
+                <a href={`https://${profile.profile.linkedinUrl}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-zinc-400 text-sm">
+                  <FiLinkedin className="text-purple-500" /> {profile?.profile?.linkedinUrl}
+                </a>
               </div>
 
               <a 
-                href={applicantData.resumeUrl}
+                href={profile?.profile?.resumeUrl} target="_blank" rel="noopener noreferrer"
                 className="mt-8 w-full flex items-center justify-center gap-2 py-4 bg-zinc-900 hover:bg-zinc-800 rounded-2xl text-sm font-bold transition-all border border-white/5 group"
               >
                 <FiDownload className="group-hover:translate-y-0.5 transition-transform" /> Download Resume PDF
@@ -162,9 +146,9 @@ const ApplicationView = () => {
             <motion.section {...fadeInUp} transition={{delay: 0.1}} className="bg-zinc-950 border border-white/5 rounded-[2.5rem] p-8">
               <h3 className="text-xs font-black uppercase tracking-[0.2em] text-zinc-600 mb-6">Application For</h3>
               <div className="p-4 bg-black rounded-2xl border border-white/5">
-                <h4 className="font-bold text-lg mb-1">{applicantData.jobDetails.title}</h4>
-                <p className="text-zinc-500 text-xs font-medium mb-3">{applicantData.jobDetails.department}</p>
-                <span className="text-[10px] bg-zinc-900 px-2 py-1 rounded text-zinc-400 font-bold uppercase tracking-widest">Posted {applicantData.jobDetails.postedOn}</span>
+                <h4 className="font-bold text-lg mb-1">{job?.title}</h4>
+                <p className="text-zinc-500 text-xs font-medium mb-3">{job.department}</p>
+                <span className="text-[10px] bg-zinc-900 px-2 py-1 rounded text-zinc-400 font-bold uppercase tracking-widest">Posted {new Date(job.createdAt).toLocaleDateString()}</span>
               </div>
             </motion.section>
           </div>
@@ -183,11 +167,11 @@ const ApplicationView = () => {
                           <circle cx="64" cy="64" r="58" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-zinc-900" />
                           <circle cx="64" cy="64" r="58" stroke="currentColor" strokeWidth="8" fill="transparent" 
                             strokeDasharray={364.4}
-                            strokeDashoffset={364.4 - (364.4 * applicantData.aiScore.score) / 100}
+                            strokeDashoffset={364.4 - (364.4 * aiScore.score) / 100}
                             className="text-purple-500 transition-all duration-1000" />
                        </svg>
                        <div className="absolute inset-0 flex flex-col items-center justify-center">
-                          <span className="text-3xl font-black">{applicantData.aiScore.score}%</span>
+                          <span className="text-3xl font-black">{aiScore.score}%</span>
                           <span className="text-[8px] font-black uppercase tracking-widest text-zinc-500">Neural Score</span>
                        </div>
                     </div>
@@ -197,7 +181,7 @@ const ApplicationView = () => {
                         <span className="text-xs font-black uppercase tracking-widest text-purple-400">Analysis Complete</span>
                       </div>
                       <h2 className="text-4xl font-black uppercase tracking-tighter italic">
-                        {applicantData.aiScore.overallFit} Fit
+                        {aiScore.overallFit} Fit
                       </h2>
                     </div>
                  </div>
@@ -216,14 +200,14 @@ const ApplicationView = () => {
                     <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-zinc-500 mb-4">
                       <FiTrendingUp className="text-purple-500" /> Analysis
                     </h3>
-                    <p className="text-zinc-300 leading-relaxed text-sm italic">"{applicantData.aiScore.analysis}"</p>
+                    <p className="text-zinc-300 leading-relaxed text-sm italic">"{aiScore.analysis}"</p>
                  </div>
                  <div className="h-px bg-white/5" />
                  <div>
                     <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-zinc-500 mb-4">
                       <FiZap className="text-purple-500" /> Recommendation
                     </h3>
-                    <p className="text-zinc-300 text-sm leading-relaxed">{applicantData.aiScore.recommendations}</p>
+                    <p className="text-zinc-300 text-sm leading-relaxed">{aiScore.recommendations}</p>
                  </div>
               </motion.section>
 
@@ -233,7 +217,7 @@ const ApplicationView = () => {
                       <FiCheckCircle /> Matched Competencies
                     </h3>
                     <div className="flex flex-wrap gap-2">
-                      {applicantData.aiScore.matchedSkills.map(skill => (
+                      {aiScore.matchedSkills.map(skill => (
                         <span key={skill} className="px-3 py-1 bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-bold rounded-lg uppercase">
                           {skill}
                         </span>
@@ -245,7 +229,7 @@ const ApplicationView = () => {
                       <FiXCircle /> Skills Gaps
                     </h3>
                     <div className="flex flex-wrap gap-2">
-                      {applicantData.aiScore.missingSkills.map(skill => (
+                      {aiScore.missingSkills.map(skill => (
                         <span key={skill} className="px-3 py-1 bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-bold rounded-lg uppercase">
                           {skill}
                         </span>

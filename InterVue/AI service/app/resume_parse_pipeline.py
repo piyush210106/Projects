@@ -14,7 +14,7 @@ def resume_parser_pipeline(
         pdf_path = download_pdf(resume_url)
 
         extracted_text = extract_text(pdf_path)
-        if not extract_text.strip():
+        if not extracted_text.strip():
             raise Exception("No resume text")
         
         features = parse_resume(extracted_text)

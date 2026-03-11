@@ -13,18 +13,7 @@ import {
 
 
 const JobCard = ({ job }) => {
-  // Standardizing data based on your Mongoose Schema
-  const data = {
-    job_id: 1,
-    title: "Senior AI Full-Stack Developer",
-    company: "InterVue Systems",
-    location: { city: "San Francisco", state: "CA", remote: true },
-    salary: { min: 140000, max: 195000, currency: "USD" },
-    employmentType: "full-time",
-    qualifications: { skills: ["React", "Node.js", "WebRTC", "Mongoose"] },
-    externalLink: null,
-    createdAt: new Date().toISOString(),
-  };
+
 
   return (
     <motion.div
@@ -47,16 +36,16 @@ const JobCard = ({ job }) => {
           <div className="space-y-1">
             <div className="flex items-center gap-3">
               <h3 className="text-xl font-black text-white group-hover:text-purple-400 transition-colors tracking-tight">
-                {data.title}
+                {job.title}
               </h3>
-              {data.externalLink && <FiExternalLink className="text-zinc-600 text-xs" />}
+              {job.externalLink && <FiExternalLink className="text-zinc-600 text-xs" />}
             </div>
             
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-zinc-500 text-sm font-medium">
               <span className="text-purple-400 font-bold tracking-tighter uppercase text-xs">
-                {data.company}
+                {job.company}
               </span>
-              <span className="flex items-center gap-1.5"><FiMapPin className="text-purple-500" /> {data.location.city}</span>
+              <span className="flex items-center gap-1.5"><FiMapPin className="text-purple-500" /> {job.location.city}</span>
               <span className="flex items-center gap-1.5"><FiClock /> 2h ago</span>
             </div>
           </div>
@@ -68,13 +57,13 @@ const JobCard = ({ job }) => {
             <span className="text-[10px] text-zinc-600 font-black uppercase tracking-widest">Salary Range</span>
             <span className="text-white font-bold flex items-center gap-1">
               <FiDollarSign className="text-green-500" size={14} />
-              {(data.salary.min / 1000)}k - {(data.salary.max / 1000)}k
+              {(job.salary.min / 1000)}k - {(job.salary.max / 1000)}k
             </span>
           </div>
 
           <div className="flex flex-col">
             <span className="text-[10px] text-zinc-600 font-black uppercase tracking-widest">Type</span>
-            <span className="text-zinc-300 font-bold text-sm capitalize">{data.employmentType}</span>
+            <span className="text-zinc-300 font-bold text-sm capitalize">{job.employmentType}</span>
           </div>
 
           {/* AI Match Chip (Aesthetic Usability) */}
@@ -87,7 +76,7 @@ const JobCard = ({ job }) => {
         {/* RIGHT SECTION: CTA (Fitts's Law) */}
         <div className="md:ml-4 flex items-center">
           <div className="w-12 h-12 rounded-2xl bg-zinc-900 group-hover:bg-purple-600 flex items-center justify-center text-zinc-600 group-hover:text-white transition-all duration-300 shadow-lg group-hover:shadow-purple-500/40">
-            <NavLink to={`/candidate/jobview/${data.job_id}`}>            
+            <NavLink to={`/candidate/jobview/${job._id}`}>            
               <FiArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </NavLink>
           </div>
