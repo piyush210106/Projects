@@ -53,9 +53,9 @@ const login = async(req, res) => {
 const signUpCandidate = async(req, res) => {
     try {
         const {uid, email} = req.user;
-        const {user_profile} = req.body;
-
-        if(!user_profile){
+        const {fullName, linkedin, role} = req.body;
+        console.log(req.body);
+        if(!fullName || !linkedin || !role){
             return res.status(400).json({message: "profile missing"});
         }
 
@@ -80,11 +80,11 @@ const signUpCandidate = async(req, res) => {
         let user = await User.create({
             firebaseUid: uid,
             email,
-            role: user_profile.role,
+            role: role,
             profile: {
-                name: user_profile.name,
+                name: fullName,
                 resumeUrl,
-                linkedinUrl: user_profile.linkedinUrl,
+                linkedinUrl: linkedin,
             }
         });
 
@@ -95,11 +95,11 @@ const signUpCandidate = async(req, res) => {
             storagePath: filePath,
         });
 
-        triggerAIprocessing({
-            resume_id: resume._id.toString(), 
-            resumeUrl: resume.url,
-            firebaseUid: uid
-        });
+        // triggerAIprocessing({
+        //     resume_id: resume._id.toString(), 
+        //     resume_url: resume.url,
+        //     firebase_uid: uid
+        // });
         
         return res.status(200).json({
             message: "Sign Up successfull",

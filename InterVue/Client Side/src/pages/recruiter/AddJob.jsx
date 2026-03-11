@@ -237,7 +237,7 @@ const AddJob = () => {
             </button>
 
             <button 
-              onClick={currentStep === totalSteps ? () => handleSubmit() : handleNext}
+              onClick={currentStep === totalSteps ? handleSubmit : handleNext}
               className="bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-xl font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-purple-900/20 active:scale-95 transition-all flex items-center gap-3"
             >
               {currentStep === totalSteps ? 'Finalize & Publish' : 'Continue Phase'}

@@ -15,7 +15,18 @@ import {
 const InterviewCard = (interview) => {
   const [timeLeft, setTimeLeft] = useState("");
   const [isLive, setIsLive] = useState(false);
+  interview = interview.interview;
+  const job = interview?.JobId;
+  const candidate = interview?.candidateId;
+  const recruiter = interview?.recruiterId;
 
+  const date = new Date(interview?.scheduledAt);
+  const formattedDate = date.toLocaleDateString("en-IN");
+  const formattedTime = date.toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+  
   const data = {
     id: 1,
     jobTitle: "Lead AI Solutions Architect",
@@ -28,7 +39,7 @@ const InterviewCard = (interview) => {
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date();
-      const scheduled = new Date(data.scheduledTime);
+      const scheduled = new Date();
       const diff = scheduled - now;
 
       if (diff <= 0) {
@@ -70,15 +81,15 @@ const InterviewCard = (interview) => {
             
             <div className="truncate">
               <h3 className="text-xl md:text-2xl font-black text-white tracking-tight truncate leading-tight">
-                {data.jobTitle}
+                {job?.title}
               </h3>
               <div className="flex items-center gap-4 mt-1">
                 <span className="text-purple-500 text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-1">
-                  <FiZap /> {data.type}
+                   {candidate.profile.name}
                 </span>
                 <span className="text-zinc-600 hidden sm:inline">|</span>
                 <span className="text-zinc-400 text-sm font-medium flex items-center gap-2">
-                  <FiUser className="text-zinc-600" /> {data.interviewer}
+                  <FiUser className="text-zinc-600" /> {recruiter.profile.name}
                 </span>
               </div>
             </div>
@@ -87,9 +98,15 @@ const InterviewCard = (interview) => {
           {/* CHUNKED INFO (Miller's Law) */}
           <div className="flex items-center gap-8 lg:gap-12 border-t md:border-t-0 md:border-l border-white/5 pt-6 md:pt-0 md:pl-10">
             <div className="flex flex-col">
-              <span className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest mb-1">Duration</span>
+              <span className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest mb-1">Date</span>
               <span className="text-white font-bold flex items-center gap-2">
-                <FiClock size={14} className="text-purple-500" /> {data.duration}
+                <FiClock size={14} className="text-purple-500" /> {formattedDate}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest mb-1">Time</span>
+              <span className="text-white font-bold flex items-center gap-2">
+                <FiClock size={14} className="text-purple-500" /> {formattedTime}
               </span>
             </div>
 
@@ -104,7 +121,7 @@ const InterviewCard = (interview) => {
           {/* ACTION BUTTON (Fitts's Law) */}
           <div className="w-full md:w-auto md:ml-4">
             <NavLink
-              to={`/callview/${data.id}`}
+              to={`/callview/${interview._id}`}
               disabled={!isLive}
               className={`w-full md:w-auto px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 overflow-hidden relative group/btn ${
                 isLive 

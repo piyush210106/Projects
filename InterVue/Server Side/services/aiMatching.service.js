@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const triggerAIMatching = ({applicationId, job_text, resumeId}) => {
-    axios.post("http://ai-service:8000/aiMatching",
+    axios.post("http://localhost:8000/appication-matching",
                 {
                     applicationId, job_text, resumeId,
                 },

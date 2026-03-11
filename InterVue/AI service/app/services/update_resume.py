@@ -18,6 +18,7 @@ def update_resume_success(
             }
         }
     )
+    print("Database Updated")
 
 def update_resume_failed(resume_id: str):
     resume_collection.update_one(
@@ -28,4 +29,5 @@ def update_resume_failed(resume_id: str):
             }
         }
     )
+    print("Database Resume failed")
     

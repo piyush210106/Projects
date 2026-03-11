@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useJoinInterviewMutation } from '../store/CandidateApi.js';
+import { useParams } from 'react-router-dom';
+import { useWebRTC } from '../useWebrtc.js';
+import { useNavigate } from "react-router-dom";
 import { 
   FiMic, 
   FiMicOff, 
@@ -14,12 +18,34 @@ import {
 } from 'react-icons/fi';
 
 
-const CallView = ({ role = 'recruiter' }) => {
+const CallView = () => {
+  const {interviewId} = useParams();
+  const [role, setRole] = useState(null);
+  const [joinInterview] = useJoinInterviewMutation();
   const [isMuted, setIsMuted] = useState(false);
   const [isCamOff, setIsCamOff] = useState(false);
   const [callDuration, setCallDuration] = useState(0);
   const [aiAnalysis, setAiAnalysis] = useState("Analyzing sentiment...");
+  const { localVideoRef, remoteVideoRef, startCall, connected, cleanup } = useWebRTC();
+  const navigate = useNavigate();
+  useEffect(() => {
+    const initCall = async() => {
+      const res = await joinInterview(interviewId).unwrap();
+      setRole(res.role);
+      await startCall(res);
+    }
+    initCall();
 
+    return () => {
+      cleanup();
+    };
+  }, [interviewId]);
+  const endCall = () => {
+    console.log("Inside End");
+    cleanup();
+    if(role === "candidate") navigate("/candidate/interviews");
+    else navigate("/recruiter/interviews");
+  };
   // Call Timer Logic
   useEffect(() => {
     const timer = setInterval(() => setCallDuration(prev => prev + 1), 1000);
@@ -33,7 +59,7 @@ const CallView = ({ role = 'recruiter' }) => {
   };
 
   // Roles: 'candidate' sees Recruiter as Large, 'recruiter' sees Candidate as Large
-  const remoteUserLabel = role === 'candidate' ? 'Senior Recruiter' : 'Candidate #402';
+  const remoteUserLabel = role === 'candidate' ? 'Senior Recruiter' : 'Candidate';
   const localUserLabel = role === 'candidate' ? 'You (Candidate)' : 'You (Recruiter)';
 
   return (
@@ -64,16 +90,17 @@ const CallView = ({ role = 'recruiter' }) => {
       </div>
 
       {/* VIDEO GRID (Jakob's Law: Main stream + PIP) */}
-      <div className="relative w-full h-full max-w-7xl max-h-[800px] flex items-center justify-center rounded-[3rem] overflow-hidden bg-zinc-900 border border-white/5">
+      <div className="relative w-full h-full max-w-7xl max-h-200 flex items-center justify-center rounded-[3rem] overflow-hidden bg-zinc-900 border border-white/5">
         
         {/* Remote Stream (Large) */}
         <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-zinc-800">
-           <div className="flex flex-col items-center gap-4">
-              <div className="w-24 h-24 rounded-full bg-zinc-700 flex items-center justify-center text-zinc-500 animate-pulse">
-                <FiUser size={48} />
-              </div>
-              <p className="text-zinc-500 font-bold uppercase tracking-[0.3em] text-xs">Connecting Stream...</p>
-           </div>
+            <video
+              ref={remoteVideoRef}
+              autoPlay
+              playsInline
+              className="w-full h-full object-cover"
+            />
+
            {/* Mock Overlay for Remote Video */}
            <div className="absolute bottom-10 left-10 hidden md:block">
               <p className="text-white font-black text-2xl drop-shadow-lg uppercase tracking-tighter">{remoteUserLabel}</p>
@@ -92,9 +119,13 @@ const CallView = ({ role = 'recruiter' }) => {
               <span className="text-[10px] text-zinc-600 font-bold uppercase">Camera Off</span>
             </div>
           ) : (
-            <div className="w-full h-full bg-zinc-800 flex items-center justify-center">
-              <FiUser className="text-zinc-600" size={40} />
-            </div>
+            <video
+              ref={localVideoRef}
+              autoPlay
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            />          
           )}
           <div className="absolute bottom-3 left-3 flex items-center gap-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg">
             <span className="text-[10px] text-white font-bold">{localUserLabel}</span>
@@ -129,32 +160,17 @@ const CallView = ({ role = 'recruiter' }) => {
 
           {/* End Call (Fitts's Law: Distinctive and critical action) */}
           <button 
-            className="w-20 h-14 md:w-28 md:h-16 rounded-[2rem] bg-red-600 text-white flex items-center justify-center transition-all duration-300 hover:bg-red-500 hover:scale-105 shadow-[0_0_30px_rgba(220,38,38,0.4)]"
+            onClick={endCall}
+            className="w-20 h-14 md:w-28 md:h-16 rounded-4xl bg-red-600 text-white flex items-center justify-center transition-all duration-300 hover:bg-red-500 hover:scale-105 shadow-[0_0_30px_rgba(220,38,38,0.4)]"
           >
             <FiPhoneMissed size={28} />
           </button>
 
           <div className="h-10 w-px bg-white/10 mx-2" />
 
-          {/* Additional Features (Hick's Law: Secondary actions separated) */}
-          <button className="w-12 h-12 rounded-full flex items-center justify-center text-zinc-500 hover:bg-zinc-800 transition-colors">
-            <FiMessageSquare size={20} />
-          </button>
-          <button className="w-12 h-12 rounded-full flex items-center justify-center text-zinc-500 hover:bg-zinc-800 transition-colors">
-            <FiSettings size={20} />
-          </button>
         </div>
       </div>
 
-      {/* RIGHT SIDEBAR: Chat/Settings (Miller's Law: Chunked into sidebar) */}
-      <div className="hidden lg:flex absolute right-10 top-1/2 -translate-y-1/2 flex-col gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-purple-500 transition-colors cursor-pointer">
-            <FiMaximize size={20} />
-          </div>
-          <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-purple-500 transition-colors cursor-pointer">
-            <FiMessageSquare size={20} />
-          </div>
-      </div>
     </div>
   );
 };

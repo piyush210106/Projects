@@ -1,6 +1,6 @@
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 import os
-from app.db.pinecone import index
+from db.pinecone import index
 
 def get_embedding_model():
     return GoogleGenerativeAIEmbeddings(
@@ -27,5 +27,5 @@ def store_resume_vector(
             }
         }
     ])
-
+    print("Vector Stored", resume_id)
     return resume_id

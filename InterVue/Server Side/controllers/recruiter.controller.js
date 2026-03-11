@@ -8,7 +8,6 @@ const addJob = async(req, res) => {
     try {
         const jobData = req.body;
         const {uid} = req.user;
-        console.log(req.body);
 
         let user = await User.findOne({firebaseUid: uid});
         if(!user) return res.status(400).json({message: "Invalid User"});
@@ -20,7 +19,7 @@ const addJob = async(req, res) => {
             description: jobData.description,
             requirements: jobData.requirements,
             responsibilities: jobData.responsibilities,
-            qualification: jobData.qualification,
+            qualifications: jobData.qualifications,
             location: jobData.location,
             salary: jobData.salary,
             employmentType: jobData.employmentType,
@@ -38,24 +37,21 @@ const addJob = async(req, res) => {
 const scheduleInterview = async(req, res) => {
 
     try {
-        const recruiterId = req.user.uid;
-        const {applicationId, scheduledAtDate} = req.body;
+        const {applicationId, data} = req.body;
+        const interviewDateTime = new Date(`${data.date}T${data.time}`);
 
-        if(!applicationId || !scheduledAtDate){
+        if(!applicationId || !interviewDateTime){
                 return res.status(400).json({message: "Missing Fields"});
         }
 
-        let application = await Application.findById({applicationId})
+        let application = await Application.findById(applicationId)
                                 .populate("candidateId")
                                 .populate("jobId");
-        
         if(!application){ 
             return res.status(400).json({message: "Invalid application Id"});
         }
+        const recruiterId = application.jobId.postedBy.toString();
 
-        if(application.jobId.postedBy.firebaseUid.toString() !== recruiterId){
-            return res.satus(400).json({message: "Recruiter not owner of curr Job posting"});
-        }
 
         const existingInterview = await Interview.findOne({ApplicationId: applicationId})
         if(existingInterview){
@@ -69,73 +65,21 @@ const scheduleInterview = async(req, res) => {
         let interview = await Interview.create({
             ApplicationId: applicationId,
             candidateId: application.candidateId._id,
-            recruiterId,
+            recruiterId: recruiterId,
             JobId: application.jobId._id,
-            scheduledAt: new Date(scheduledAtDate),
+            scheduledAt: interviewDateTime,
             videoCallRoom: {
                 roomId,
                 roomUrl,
             }
         });
-
+        console.log("Interview Scheduled");
         return res.status(200).json({message: "Interview Scheduled"});
 
     } catch (error) {
         console.log("Error in scheduling interview ", error);
-        return res.satus(400).json({message:"Error in scheduling interview"});
+        return res.status(400).json({message:"Error in scheduling interview"});
     }
-}
-
-const joinInterview = async (req, res) => {
-    try {
-        const {interviewId} = req.body;
-        const userId = req.user.uid;
-    
-        if(!interviewId){
-            return res.status(400).json({message: "InterviewId required"});
-        }
-
-        const interview = await Interview.findById(interviewId);
-        if(!interview){
-            return res.status(400).json({message: "Interview Not found"});
-        }
-
-        let user = await User.findOne({firebaseUid: userId});
-        if(!user){
-            return res.status(400).json({message: "User not found"});
-        }
-
-        let role = null;
-        if(interview.candidateId.toString() === user._id) role = "candidate";
-        if(interview.recruiterId.toString() === user._id) role = "recruiter";
-
-        if(!role){
-            return res.status(400).json({message: "Not authorized to join room"});
-        }
-
-        const token = jwt.sign(
-        {
-            interviewId: interview._id,
-            roomId: interview.videoCallRoom.roomId,
-            role,
-            userId: user._id
-        },
-            process.env.JWT_SECRET,
-        { expiresIn: "15m" } 
-        );
-
-        return res.status(200).json({
-            roomId: interview.videoCallRoom.roomId,
-            signalingServerUrl: process.env.SIGNALING_SERVER_URL,
-            token,
-            role
-        });
-
-
-    } catch (error) {
-        console.log("Error in joining room ",error);
-    }
-
 }
 
 const getApplications = async (req, res) => {
@@ -148,20 +92,20 @@ const getApplications = async (req, res) => {
         if(!user){
             return res.status(400).json({message: "User not found"});
         }
-
         const applications = await Application.find()
             .populate({
                 path: "jobId",
                 match: { postedBy: user._id },
             })
             .populate("candidateId")
+            .populate("resume")
             .exec();
-
-        const filteredApplications = applications.filter(app => app.jobId);
+        const filteredApplications = applications.filter(app => app.jobId && app.jobId.postedBy.toString() !== userId);
+        console.log(filteredApplications);
             return res.status(200).json({
                 message: "Required Applications",
                 filteredApplications
-        });
+            });
 
     } catch (error) {
         console.log("Error in fetching applications ", error);
@@ -180,7 +124,12 @@ const getInterviews = async (req, res) => {
             return res.status(400).json({message: "User not found"});
         }
 
-        let interviews = await Interview.find({recruiterId: user._id}).sort({scheduledAt: -1});
+        let interviews = await Interview.find({recruiterId: user._id})
+                                        .populate("ApplicationId")
+                                        .populate("candidateId")
+                                        .populate("recruiterId")
+                                        .populate("JobId")
+                                        .sort({scheduledAt: -1});
         if(interviews.length === 0){
             return res.status(200).json({
                 message: "No Interviews Scheduled",
@@ -199,6 +148,6 @@ const getInterviews = async (req, res) => {
     }
 }
 
-export {addJob, scheduleInterview, joinInterview, getApplications, getInterviews};
+export {addJob, scheduleInterview, getApplications, getInterviews};
 
 

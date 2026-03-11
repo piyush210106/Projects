@@ -8,7 +8,7 @@ import NavbarCan from './pages/candidate/NavbarCan.jsx';
 import InJobs from "./pages/candidate/InJobs.jsx";
 import ExJobs from './pages/candidate/ExJobs.jsx';
 import AppliedJobs from './pages/candidate/AppliedJobs.jsx';
-import Interviews from './pages/candidate/Interviews.jsx';
+import InterviewsCan from './pages/candidate/InterviewsCan.jsx';
 
 import SignUpRec from './pages/recruiter/SignUpRec.jsx';
 import NavbarRec from './pages/recruiter/NavbarRec.jsx';
@@ -80,9 +80,11 @@ const router = createBrowserRouter([
     path: "/candidate/appliedjobs",
     element: (
       <>
-      <div className='bg-black w-screen'>
+      <div className='flex flex-col bg-black'>
         <NavbarCan/>
-        <AppliedJobs/>
+        <main className='py-12'>
+          <AppliedJobs/>
+        </main>
       </div>
       </>
     )
@@ -93,7 +95,7 @@ const router = createBrowserRouter([
       <>
       <div className='bg-black w-screen'>
         <NavbarCan/>
-        <Interviews/>
+        <InterviewsCan/>
       </div>
       </>
     )
@@ -105,7 +107,7 @@ const router = createBrowserRouter([
     )
   },
   {
-    path: "/candidate/call",
+    path: "/callview/:interviewId",
     element: (
       <CallView/>
     )
@@ -152,7 +154,7 @@ const router = createBrowserRouter([
     )
   },
   {
-    path: "/callview/:id",
+    path: "/callview/:interviewId",
     element: (
       <>
       <CallView/>

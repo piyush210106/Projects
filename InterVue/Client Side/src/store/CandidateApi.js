@@ -18,17 +18,26 @@ const candidateApi = baseApi.injectEndpoints({
         }),
 
         getInterviewsCan: builder.query({
-            query: () => "/candidate/interviews",
+            query: () => "/candidate/getinterviews",
             providesTags: ["InterviewsCandidate"]
         }),
 
         applyJob: builder.mutation({
-            query: (job_id) => ({
-                url: "/candidate/applyjob",
-                method: "POST",
-                body: job_id
-            }),
+            query: (jobId) => {
+                return {
+                    url: "/candidate/applyjob",
+                    method: "POST",
+                    body: {jobId}
+                };
+            },
             invalidatesTags: ["AppliedJobs"]
+        }),
+        joinInterview: builder.mutation({
+            query: (interviewId) => ({
+                url: "/interview/join",
+                method: "POST",
+                body: { interviewId }
+            }) 
         })
     })
 });
@@ -37,6 +46,7 @@ export const {useGetInternalJobsQuery,
         useGetExternalJobsQuery,
         useGetAppliedJobsQuery,
         useGetInterviewsCanQuery,
-        useApplyJobMutation 
+        useApplyJobMutation,
+        useJoinInterviewMutation
         } = candidateApi;
 

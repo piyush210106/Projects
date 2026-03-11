@@ -4,7 +4,8 @@ import json
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-1.5-flash",
-    temperature=0.3
+    temperature=0.3,
+    api_key="AIzaSyAS2slJTWmzvU14IJV1h8RjGOAFpFUjPq4"
 )
 
 analysis_prompt = PromptTemplate(

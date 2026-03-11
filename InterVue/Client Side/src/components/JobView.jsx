@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import {useGetInternalJobsQuery, useApplyJobMutation} from "../store/CandidateApi.js";
 import { motion } from 'framer-motion';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import { 
   FiBriefcase, FiMapPin, FiDollarSign, FiCalendar, FiUsers, 
   FiChevronLeft, FiSend, FiBookmark, FiGlobe, FiCpu,
@@ -12,67 +13,31 @@ import {
 const JobView = () => {
   const [isSaved, setIsSaved] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
+  const [applyJob] = useApplyJobMutation();
 
-  // Mock Data mapped from provided Mongoose Schema
-  const job = {
-    title: "Senior AI Full-Stack Developer",
-    company: "InterVue AI",
-    department: "Engineering",
-    description: "Join the team building the future of recruitment. You will be responsible for scaling our WebRTC video engine and integrating advanced LLMs for resume parsing.",
-    requirements: [
-      "5+ years of experience with React and Node.js",
-      "Strong understanding of WebRTC and real-time communication",
-      "Experience with MongoDB and Mongoose",
-      "Familiarity with OpenAI API or similar LLM frameworks"
-    ],
-    responsibilities: [
-      "Architect and maintain scalable frontend components",
-      "Optimize backend performance for high-concurrency interviews",
-      "Collaborate with AI researchers to deploy parsing models",
-      "Mentor junior developers and participate in code reviews"
-    ],
-    qualifications: {
-      education: "Bachelor's in Computer Science or equivalent experience",
-      experienceYears: 5,
-      skills: ["React", "Node.js", "WebRTC", "Mongoose", "Tailwind CSS"]
-    },
-    location: {
-      city: "San Francisco",
-      state: "CA",
-      country: "USA",
-      remote: true,
-      hybrid: false
-    },
-    salary: {
-      min: 140000,
-      max: 190000,
-      currency: "USD"
-    },
-    employmentType: "full-time",
-    openings: 3,
-    externalLink: null,
-    createdAt: "2026-01-10T10:00:00Z"
-  };
+  const {id} = useParams();
+  const {data, isLoading} = useGetInternalJobsQuery();
+  const job = data?.jobs?.find((j) => j._id?.toString() === id);
+  if (!data) return <div>Loading...</div>;
 
-  const handleApply = () => {
-    setIsApplying(true);
-    // Doherty Threshold: Interaction feedback under 400ms
-    setTimeout(() => {
-      alert("Application sent successfully via InterVue AI!");
-      setIsApplying(false);
-    }, 1200);
+  const handleApply = async(e) => {
+    try {
+        console.log(id);
+        const res = await applyJob(id).unwrap();
+        console.log(res);
+    } catch (err) {
+        console.error(err);
+    }
   };
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-purple-500/30 font-sans pb-20">
       
-      {/* Dynamic Background */}
       <div className="fixed inset-0 pointer-events-none -z-10">
         <div className="absolute top-0 right-0 w-150 h-150 bg-purple-600/5 blur-[120px] rounded-full" />
         <div className="absolute bottom-0 left-0 w-100 h-100 bg-purple-900/5 blur-[100px] rounded-full" />
       </div>
 
-      {/* Header Navigation */}
       <nav className="sticky top-0 z-40 bg-black/80 backdrop-blur-md border-b border-white/5 py-4 px-6">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <NavLink to={"/candidate/injobs"} className="flex items-center gap-2 text-zinc-400 hover:text-purple-400 transition-colors group">
@@ -96,10 +61,8 @@ const JobView = () => {
       <main className="max-w-6xl mx-auto px-6 pt-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           
-          {/* LEFT CONTENT: Job Details (Law of Proximity) */}
           <div className="lg:col-span-8 space-y-12">
             
-            {/* Hero Section */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -121,7 +84,7 @@ const JobView = () => {
             </motion.div>
 
             {/* AI Summary Highlight (Aesthetic-Usability) */}
-            {/* <motion.div 
+            <motion.div 
               initial={{ opacity: 0 }} 
               animate={{ opacity: 1 }} 
               transition={{ delay: 0.2 }}
@@ -132,7 +95,7 @@ const JobView = () => {
                 <h4 className="text-sm font-bold uppercase tracking-widest text-purple-400 mb-1">AI Match Insight</h4>
                 <p className="text-zinc-300 text-sm leading-relaxed">Based on your profile, you have a 85% skill match for this role. Your experience with WebRTC is a key highlight for this department.</p>
               </div>
-            </motion.div> */}
+            </motion.div>
 
             {/* Job Content Sections (Miller's Law - Chunking) */}
             <section className="space-y-8 text-zinc-300">
@@ -193,6 +156,10 @@ const JobView = () => {
                   <span className="font-bold text-green-500">{job.location.remote ? 'Yes' : 'No'}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm border-b border-white/5 pb-3">
+                  <span className="text-zinc-500 flex items-center gap-2"><FiGlobe /> Hybrid</span>
+                  <span className="font-bold text-green-500">{job.location.hybrid ? 'Yes' : 'No'}</span>
+                </div>
+                <div className="flex justify-between items-center text-sm border-b border-white/5 pb-3">
                   <span className="text-zinc-500 flex items-center gap-2"><FiCalendar /> Posted</span>
                   <span className="font-bold">{new Date(job.createdAt).toLocaleDateString()}</span>
                 </div>
@@ -237,7 +204,7 @@ const JobView = () => {
                 </div>
               </div>
 
-              <div className="mt-8">
+              {/* <div className="mt-8">
                 <p className="text-xs text-zinc-500 font-bold uppercase mb-3">Key Skills</p>
                 <div className="flex flex-wrap gap-2">
                   {job.qualifications.skills.map(skill => (
@@ -246,7 +213,7 @@ const JobView = () => {
                     </span>
                   ))}
                 </div>
-              </div>
+              </div> */}
             </div>
 
           </div>
