@@ -36,7 +36,7 @@ const SignUpCan = () => {
     setLoading(true);
     try {
           const response = await axios.post(
-            "http://localhost:3000/auth/signUpCandidate",
+            "https://projects-iii4.onrender.com/auth/signUpCandidate",
             formData,
             {
               withCredentials: true,

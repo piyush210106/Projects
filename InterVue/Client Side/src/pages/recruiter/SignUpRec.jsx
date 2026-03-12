@@ -43,7 +43,7 @@ const SignUpRec = () => {
     setIsSubmitting(true);
     try {
       const response = await axios.post(
-        "http://localhost:3000/auth/signUpRecruiter",
+        "https://projects-iii4.onrender.com/auth/signUpRecruiter",
         formData,
         {
           withCredentials: true

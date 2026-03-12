@@ -25,7 +25,7 @@ const Landing = () => {
     try {
         const {idToken} = await googleLogin();
         const res = await axios.post(
-            "http://localhost:3000/auth/login",
+            "https://projects-iii4.onrender.com/auth/login",
             {role},
             {
                 headers: {
