@@ -8,7 +8,7 @@ import { interviewRouter } from "./routes/interview.routes.js";
 
 const app = express();
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173","https://projects-nlv9.vercel.app"],
     credentials: true
 }))
 app.use(express.json());
