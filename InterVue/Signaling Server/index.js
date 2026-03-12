@@ -10,8 +10,13 @@ const PORT = process.env.PORT || 8001;
 
 const io = new Server(PORT, {
     cors: {
-        origin: "*"
-    }
+    origin: [
+      "http://localhost:5173",
+      "https://projects-nlv9.vercel.app"
+    ],
+    methods: ["GET", "POST"],
+    credentials: true
+  }
 });
 
 console.log(`Signaling server running on port ${PORT}`);
