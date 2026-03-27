@@ -2,21 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import JobCard from "../../components/JobCard.jsx";
 import { useGetInternalJobsQuery } from '../../store/CandidateApi.js';
-import { 
-  FiSearch, 
-  FiMapPin, 
-  FiBriefcase, 
-  FiClock, 
-  FiChevronRight, 
-  FiX, 
-  FiCheckCircle 
+import {
+  FiSearch,
+  FiMapPin,
+  FiBriefcase,
+  FiClock,
+  FiChevronRight,
+  FiX,
+  FiCheckCircle
 } from 'react-icons/fi';
-
+import toast from 'react-hot-toast';
 
 export default function InJobs() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const {data, isLoading} = useGetInternalJobsQuery();
+  const {data, isLoading, isError} = useGetInternalJobsQuery();
+
+  useEffect(() => {
+    if (isError) toast.error("Failed to load jobs. Please refresh.");
+  }, [isError]);
 
   const filteredJobs = data?.jobs?.filter(job => 
     job?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||

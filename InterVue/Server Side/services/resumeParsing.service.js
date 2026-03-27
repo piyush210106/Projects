@@ -1,8 +1,7 @@
 import axios from "axios";
 
 const triggerAIprocessing = ({resume_id, resume_url, firebase_uid}) => {
-    console.log(process.env.AI_INTERNAL_SECRET);
-    axios.post("http://localhost:8000/process-resume",
+    axios.post(`${process.env.AI_SERVICE_URL}/process-resume`,
                 {
                     resume_id, resume_url, firebase_uid,
                 },

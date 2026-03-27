@@ -27,15 +27,6 @@ const InterviewCard = (interview) => {
     minute: "2-digit"
   });
   
-  const data = {
-    id: 1,
-    jobTitle: "Lead AI Solutions Architect",
-    interviewer: "Dr. Aris Thorne",
-    scheduledTime: new Date(Date.now()).toISOString(), 
-    duration: "60 mins",
-    type: "AI-Proctored System Design"
-  };
-
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date();
@@ -55,7 +46,7 @@ const InterviewCard = (interview) => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [data.scheduledTime]);
+  }, [interview?.scheduledAt]);
 
   return (
     <motion.div

@@ -12,6 +12,7 @@ import {
   FiZap,
   FiLoader
 } from 'react-icons/fi';
+import toast from 'react-hot-toast';
 
 const SignUpCan = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const SignUpCan = () => {
     setLoading(true);
     try {
           const response = await axios.post(
-            "https://projects-iii4.onrender.com/auth/signUpCandidate",
+            `${import.meta.env.VITE_API_URL}/auth/signUpCandidate`,
             formData,
             {
               withCredentials: true,
@@ -48,10 +49,13 @@ const SignUpCan = () => {
           console.log(formData);
           console.log(response.data);
           setLoading(false);
+          toast.success("Profile created successfully!");
           navigate("/candidate/injobs");
     } catch (error) {
           console.log("Error in submitting form", error);
-    }    
+          setLoading(false);
+          toast.error(error.response?.data?.message || "Sign up failed. Please try again.");
+    }
   };
 
   const handleFileChange = (e) => {

@@ -16,6 +16,7 @@ import {
 import { googleLogin } from '../auth/authService.js';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const Landing = () => {
 
@@ -25,7 +26,7 @@ const Landing = () => {
     try {
         const {idToken} = await googleLogin();
         const res = await axios.post(
-            "https://projects-iii4.onrender.com/auth/login",
+            `${import.meta.env.VITE_API_URL}/auth/login`,
             {role},
             {
                 headers: {
@@ -36,15 +37,18 @@ const Landing = () => {
         );
 
         if(res.data.onboardingRequired){
+          toast.success("Welcome! Let's complete your profile");
           navigate(`${res.data.role}/signUp`);
         }
         else{
+            toast.success("Login successful");
             if(res.data.role === "candidate") navigate(`${res.data.role}/injobs`);
             else navigate(`/recruiter/addjob`);
         }
-        
+
     } catch (error) {
         console.log("Error in login", error);
+        toast.error(error.response?.data?.message || "Login failed. Please try again.");
     }
 
 }

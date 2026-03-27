@@ -4,19 +4,19 @@ import { useJoinInterviewMutation } from '../store/CandidateApi.js';
 import { useParams } from 'react-router-dom';
 import { useWebRTC } from '../useWebrtc.js';
 import { useNavigate } from "react-router-dom";
-import { 
-  FiMic, 
-  FiMicOff, 
-  FiVideo, 
-  FiVideoOff, 
-  FiPhoneMissed, 
-  FiMaximize, 
-  FiMessageSquare, 
-  FiCpu, 
+import {
+  FiMic,
+  FiMicOff,
+  FiVideo,
+  FiVideoOff,
+  FiPhoneMissed,
+  FiMaximize,
+  FiMessageSquare,
+  FiCpu,
   FiSettings,
   FiUser
 } from 'react-icons/fi';
-
+import toast from 'react-hot-toast';
 
 const CallView = () => {
   const {interviewId} = useParams();
@@ -26,13 +26,23 @@ const CallView = () => {
   const [isCamOff, setIsCamOff] = useState(false);
   const [callDuration, setCallDuration] = useState(0);
   const [aiAnalysis, setAiAnalysis] = useState("Analyzing sentiment...");
-  const { localVideoRef, remoteVideoRef, startCall, connected, cleanup } = useWebRTC();
+  const { localVideoRef, remoteVideoRef, startCall, connected, cleanup, toggleAudio, toggleVideo } = useWebRTC();
   const navigate = useNavigate();
+
   useEffect(() => {
     const initCall = async() => {
-      const res = await joinInterview(interviewId).unwrap();
-      setRole(res.role);
-      await startCall(res);
+      try {
+        const res = await joinInterview(interviewId).unwrap();
+        setRole(res.role);
+        await startCall(res);
+        toast.success("Connected to interview");
+      } catch (error) {
+        if (error.name === 'NotAllowedError') {
+          toast.error("Camera/mic permission denied. Please allow access and try again.");
+        } else {
+          toast.error("Failed to join interview. Please try again.");
+        }
+      }
     }
     initCall();
 
@@ -40,11 +50,26 @@ const CallView = () => {
       cleanup();
     };
   }, [interviewId]);
+
+  const handleToggleMute = () => {
+    const newMuted = !isMuted;
+    setIsMuted(newMuted);
+    toggleAudio(newMuted);
+  };
+
+  const handleToggleCamera = () => {
+    const newCamOff = !isCamOff;
+    setIsCamOff(newCamOff);
+    toggleVideo(newCamOff);
+  };
+
   const endCall = () => {
     cleanup();
+    toast.success("Call ended");
     if(role === "candidate") navigate("/candidate/interviews");
     else navigate("/recruiter/interviews");
   };
+
   // Call Timer Logic
   useEffect(() => {
     const timer = setInterval(() => setCallDuration(prev => prev + 1), 1000);
@@ -63,10 +88,10 @@ const CallView = () => {
 
   return (
     <div className="h-screen w-full bg-black flex flex-col items-center justify-center p-4 overflow-hidden font-sans">
-      
+
       {/* HEADER: Call Info (Aesthetic Usability) */}
       <div className="absolute top-6 left-6 right-6 flex justify-between items-center z-20">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           className="flex items-center gap-4 bg-zinc-900/80 backdrop-blur-md px-5 py-3 rounded-2xl border border-white/10"
@@ -78,7 +103,7 @@ const CallView = () => {
         </motion.div>
 
         {/* AI Insight Overlay (Doherty Threshold: Real-time feedback) */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           className="hidden md:flex items-center gap-3 bg-purple-600/10 border border-purple-500/30 px-5 py-3 rounded-2xl"
@@ -90,7 +115,7 @@ const CallView = () => {
 
       {/* VIDEO GRID (Jakob's Law: Main stream + PIP) */}
       <div className="relative w-full h-full max-w-7xl max-h-200 flex items-center justify-center rounded-[3rem] overflow-hidden bg-zinc-900 border border-white/5">
-        
+
         {/* Remote Stream (Large) */}
         <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-zinc-800">
             <video
@@ -107,25 +132,24 @@ const CallView = () => {
         </div>
 
         {/* Local Stream (PIP - Picture in Picture) */}
-        <motion.div 
+        <motion.div
           drag
           dragConstraints={{ left: -400, right: 400, top: -200, bottom: 200 }}
           className="absolute top-10 right-10 w-40 h-56 md:w-64 md:h-80 bg-zinc-950 rounded-3xl border-2 border-purple-500/50 shadow-2xl overflow-hidden z-10 cursor-move"
         >
-          {isCamOff ? (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-zinc-900">
+          {isCamOff && (
+            <div className="absolute inset-0 z-10 w-full h-full flex flex-col items-center justify-center bg-zinc-900">
               <FiVideoOff className="text-zinc-700 mb-2" size={32} />
               <span className="text-[10px] text-zinc-600 font-bold uppercase">Camera Off</span>
             </div>
-          ) : (
-            <video
-              ref={localVideoRef}
-              autoPlay
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-            />          
           )}
+          <video
+            ref={localVideoRef}
+            autoPlay
+            muted
+            playsInline
+            className="w-full h-full object-cover"
+          />
           <div className="absolute bottom-3 left-3 flex items-center gap-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg">
             <span className="text-[10px] text-white font-bold">{localUserLabel}</span>
             {isMuted && <FiMicOff className="text-red-500" size={10} />}
@@ -136,10 +160,10 @@ const CallView = () => {
       {/* CONTROLS: Center Dock (Fitts's Law: Large clickable targets) */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-6 z-30">
         <div className="flex items-center gap-4 bg-zinc-900/90 backdrop-blur-2xl p-4 rounded-[2.5rem] border border-white/10 shadow-3xl">
-          
+
           {/* Mute Button */}
-          <button 
-            onClick={() => setIsMuted(!isMuted)}
+          <button
+            onClick={handleToggleMute}
             className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
               isMuted ? 'bg-red-500 text-white shadow-[0_0_20px_rgba(239,68,68,0.4)]' : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
             }`}
@@ -148,8 +172,8 @@ const CallView = () => {
           </button>
 
           {/* Video Toggle */}
-          <button 
-            onClick={() => setIsCamOff(!isCamOff)}
+          <button
+            onClick={handleToggleCamera}
             className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
               isCamOff ? 'bg-red-500 text-white shadow-[0_0_20px_rgba(239,68,68,0.4)]' : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
             }`}
@@ -158,7 +182,7 @@ const CallView = () => {
           </button>
 
           {/* End Call (Fitts's Law: Distinctive and critical action) */}
-          <button 
+          <button
             onClick={endCall}
             className="w-20 h-14 md:w-28 md:h-16 rounded-4xl bg-red-600 text-white flex items-center justify-center transition-all duration-300 hover:bg-red-500 hover:scale-105 shadow-[0_0_30px_rgba(220,38,38,0.4)]"
           >

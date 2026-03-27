@@ -4,9 +4,9 @@ import { useAddJobMutation } from '../../store/RecruiterApi.js';
 import { 
   FiBriefcase, FiMapPin, FiDollarSign, FiPlus, 
   FiTrash2, FiArrowRight, FiArrowLeft, FiCheck, 
-  FiLayers, FiInfo, FiZap, FiCpu 
+  FiLayers, FiInfo, FiZap, FiCpu
 } from 'react-icons/fi';
-
+import toast from 'react-hot-toast';
 
 const AddJob = () => {
   const [addJob, {isLoading}] = useAddJobMutation();
@@ -29,16 +29,21 @@ const AddJob = () => {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
-    await addJob(formData);
-    setFormData({
-      title: '', department: '', description: '',
-      requirements: [''], responsibilities: [''],
-      qualifications: { education: '', experienceYears: 0},
-      location: { city: '', state: '', country: '', remote: false, hybrid: false },
-      salary: { min: 0, max: 0, currency: 'USD' },
-      employmentType: 'full-time', openings: 1
-    });
-    setCurrentStep(1);
+    try {
+      await addJob(formData).unwrap();
+      toast.success("Job published successfully!");
+      setFormData({
+        title: '', department: '', description: '',
+        requirements: [''], responsibilities: [''],
+        qualifications: { education: '', experienceYears: 0},
+        location: { city: '', state: '', country: '', remote: false, hybrid: false },
+        salary: { min: 0, max: 0, currency: 'USD' },
+        employmentType: 'full-time', openings: 1
+      });
+      setCurrentStep(1);
+    } catch (error) {
+      toast.error(error.data?.message || "Failed to publish job. Please try again.");
+    }
   };
 
   const handleArrayUpdate = (field, index, value, nestedField = null) => {

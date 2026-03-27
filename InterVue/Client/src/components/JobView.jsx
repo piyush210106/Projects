@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import {useGetInternalJobsQuery, useApplyJobMutation} from "../store/CandidateApi.js";
 import { motion } from 'framer-motion';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useParams, useNavigate } from 'react-router-dom';
 import { 
   FiBriefcase, FiMapPin, FiDollarSign, FiCalendar, FiUsers, 
   FiChevronLeft, FiSend, FiBookmark, FiGlobe, FiCpu,
   FiAward, FiLayers, FiCheckCircle, FiZap
 } from 'react-icons/fi';
-
- 
+import toast from 'react-hot-toast';
 
 const JobView = () => {
+  const navigate = useNavigate();
   const [isSaved, setIsSaved] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
   const [applyJob] = useApplyJobMutation();
@@ -23,8 +23,11 @@ const JobView = () => {
   const handleApply = async(e) => {
     try {
         const res = await applyJob(id).unwrap();
+        toast.success("Application submitted successfully!");
+        navigate("/candidate/injobs");
     } catch (err) {
         console.error(err);
+        toast.error(err.data?.message || "Failed to apply. Please try again.");
     }
   };
 

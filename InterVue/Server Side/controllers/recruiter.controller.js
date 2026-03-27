@@ -90,6 +90,10 @@ const getApplications = async (req, res) => {
         if(!user){
             return res.status(400).json({message: "User not found"});
         }
+        // Get application IDs that already have interviews scheduled
+        const scheduledInterviews = await Interview.find().select("ApplicationId");
+        const scheduledAppIds = scheduledInterviews.map(i => i.ApplicationId.toString());
+
         const applications = await Application.find()
             .populate({
                 path: "jobId",
@@ -98,7 +102,11 @@ const getApplications = async (req, res) => {
             .populate("candidateId")
             .populate("resume")
             .exec();
-        const filteredApplications = applications.filter(app => app.jobId && app.jobId.postedBy.toString() !== userId);
+        const filteredApplications = applications.filter(app =>
+            app.jobId &&
+            app.jobId.postedBy.toString() !== userId &&
+            !scheduledAppIds.includes(app._id.toString())
+        );
             return res.status(200).json({
                 message: "Required Applications",
                 filteredApplications
@@ -121,7 +129,12 @@ const getInterviews = async (req, res) => {
             return res.status(400).json({message: "User not found"});
         }
 
-        let interviews = await Interview.find({recruiterId: user._id})
+        const sixHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000);
+
+        let interviews = await Interview.find({
+                                            recruiterId: user._id,
+                                            scheduledAt: {$gte: sixHoursAgo}
+                                        })
                                         .populate("ApplicationId")
                                         .populate("candidateId")
                                         .populate("recruiterId")

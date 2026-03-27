@@ -95,11 +95,11 @@ const signUpCandidate = async(req, res) => {
             storagePath: filePath,
         });
 
-        // triggerAIprocessing({
-        //     resume_id: resume._id.toString(), 
-        //     resume_url: resume.url,
-        //     firebase_uid: uid
-        // });
+        triggerAIprocessing({
+            resume_id: resume._id.toString(),
+            resume_url: resume.url,
+            firebase_uid: uid
+        });
         
         return res.status(200).json({
             message: "Sign Up successfull",
@@ -144,6 +144,30 @@ const signUpRecruiter = async (req, res) => {
     }
 
 }
+const refreshSession = async (req, res) => {
+    try {
+        const { idToken } = req.user;
+
+        res.cookie("session", idToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: 24 * 60 * 60 * 1000,
+        });
+
+        const user = await User.findOne({ firebaseUid: req.user.uid });
+
+        return res.status(200).json({
+            message: "Session refreshed",
+            role: user?.role || null,
+            onboardingRequired: !user,
+        });
+    } catch (error) {
+        console.log("Error refreshing session", error);
+        return res.status(401).json({ message: "Invalid session" });
+    }
+};
+
 const logout = async (req, res) => {
     res.clearCookie("session", {
         httpOnly: true,
@@ -153,4 +177,4 @@ const logout = async (req, res) => {
     return res.status(200).json({message: "logOut successfull"});
 }
 
-export {login, signUpCandidate, logout,signUpRecruiter};
+export {login, signUpCandidate, logout, signUpRecruiter, refreshSession};

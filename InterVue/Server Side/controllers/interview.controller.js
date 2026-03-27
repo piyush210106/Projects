@@ -49,6 +49,7 @@ const joinInterview = async (req, res) => {
 
     } catch (error) {
         console.log("Error in joining room ",error);
+        return res.status(400).json({message: "Error joining interview"});
     }
 
 }

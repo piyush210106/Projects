@@ -30,7 +30,7 @@ const candidateApi = baseApi.injectEndpoints({
                     body: {jobId}
                 };
             },
-            invalidatesTags: ["AppliedJobs"]
+            invalidatesTags: ["AppliedJobs", "InternalJobs"]
         }),
         joinInterview: builder.mutation({
             query: (interviewId) => ({

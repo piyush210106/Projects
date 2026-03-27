@@ -1,14 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
-import ApplicationView from './ApplicationView.jsx';
-import { 
-  FiUser, 
-  FiBriefcase, 
-  FiFileText, 
-  FiArrowRight, 
-  FiCpu, 
-  FiLinkedin, 
+import {
+  FiUser,
+  FiBriefcase,
+  FiFileText,
+  FiArrowRight,
+  FiCpu,
+  FiLinkedin,
   FiExternalLink,
   FiStar
 } from 'react-icons/fi';
@@ -18,17 +17,11 @@ const ApplicationCard = (applicant) => {
   const application = applicant?.applicant;
   const candidate = application?.candidateId;
   const job = application?.jobId;
-  const data = {
-    id: 1,
-    name: "Alex Rivera",
-    email: "alex.rivera@dev.io",
-    jobTitle: "Senior AI Engineer",
-    appliedDate: "Oct 24, 2025",
-    experience: "8+ Years",
-    aiScore: 94,
-    status: "Shortlisted",
-    skills: ["PyTorch", "React", "LLMs", "Node.js"]
-  };
+  const aiScore = application?.aiScore;
+  const hasAiScore = aiScore?.score != null;
+
+  const matchedSkills = aiScore?.matchedSkills?.slice(0, 4) || [];
+  const fitLabel = aiScore?.overallFit || "Pending";
 
   return (
     <motion.div
@@ -41,20 +34,20 @@ const ApplicationCard = (applicant) => {
       <div className="absolute top-0 right-0 w-32 h-full bg-linear-to-l from-purple-600/5 to-transparent pointer-events-none" />
 
       <div className="flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
-        
+
         {/* SECTION 1: CANDIDATE IDENTITY (Law of Proximity) */}
         <div className="flex items-center gap-5 flex-1 min-w-0">
           <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center text-zinc-400 group-hover:text-purple-400 transition-colors shadow-inner overflow-hidden">
-            {/* Initial placeholder or Profile Icon */}
-            <span className="text-xl font-black">{candidate?.profile?.name.charAt(0)}</span>
+            <span className="text-xl font-black">{candidate?.profile?.name?.charAt(0)}</span>
           </div>
-          
+
           <div className="truncate">
             <h3 className="text-xl font-black text-white group-hover:text-purple-400 transition-colors tracking-tight truncate">
               {candidate?.profile?.name}
             </h3>
             <div className="flex items-center gap-3 mt-1 text-zinc-500 text-sm font-medium">
-              <a href={`https://${candidate.profile.linkedinUrl}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5"><FiLinkedin size={14}/> Profile</a>              <span className="text-zinc-800">|</span>
+              <a href={`https://${candidate?.profile?.linkedinUrl}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5"><FiLinkedin size={14}/> Profile</a>
+              <span className="text-zinc-800">|</span>
               <span className="truncate">{candidate?.email}</span>
             </div>
           </div>
@@ -71,7 +64,7 @@ const ApplicationCard = (applicant) => {
 
           <div className="flex flex-col">
             <span className="text-[10px] text-zinc-600 font-black uppercase tracking-widest mb-1">Experience</span>
-            <span className="text-zinc-300 font-bold text-sm">{job?.qualifications?.experienceYears}</span>
+            <span className="text-zinc-300 font-bold text-sm">{job?.qualifications?.experienceYears} yrs</span>
           </div>
         </div>
 
@@ -79,22 +72,34 @@ const ApplicationCard = (applicant) => {
         <div className="flex items-center gap-6 border-t lg:border-t-0 lg:border-l border-white/5 pt-4 lg:pt-0 lg:pl-10">
           <div className="flex flex-col items-center">
              <div className="flex items-center gap-2 mb-1">
-                <FiCpu className="text-purple-500 animate-pulse" size={14} />
+                <FiCpu className={`text-purple-500 ${hasAiScore ? '' : 'animate-pulse'}`} size={14} />
                 <span className="text-[10px] text-zinc-600 font-black uppercase tracking-widest">Match Score</span>
              </div>
              <div className="relative flex items-center justify-center">
-                <span className="text-2xl font-black text-white">{data.aiScore}%</span>
-                {/* Visual progress ring could go here */}
+                <span className="text-2xl font-black text-white">
+                  {hasAiScore ? `${aiScore.score}%` : '--'}
+                </span>
              </div>
           </div>
 
           <div className="hidden sm:flex flex-col gap-1.5">
-             <div className="flex gap-1">
-                {[1,2,3].map(i => <FiStar key={i} size={10} className="fill-purple-500 text-purple-500" />)}
-             </div>
-             <span className="px-3 py-1 bg-purple-600/10 text-purple-400 text-[10px] font-black uppercase rounded-lg border border-purple-500/20">
-                {data.status}
-             </span>
+             {hasAiScore ? (
+               <>
+                 <div className="flex gap-1">
+                    {[1,2,3].map(i => {
+                      const starCount = aiScore.overallFit === "Excellent" ? 3 : aiScore.overallFit === "Good" ? 2 : 1;
+                      return <FiStar key={i} size={10} className={i <= starCount ? "fill-purple-500 text-purple-500" : "text-zinc-800"} />;
+                    })}
+                 </div>
+                 <span className="px-3 py-1 bg-purple-600/10 text-purple-400 text-[10px] font-black uppercase rounded-lg border border-purple-500/20">
+                    {fitLabel}
+                 </span>
+               </>
+             ) : (
+               <span className="px-3 py-1 bg-zinc-900 text-zinc-500 text-[10px] font-black uppercase rounded-lg border border-white/5">
+                  Processing
+               </span>
+             )}
           </div>
         </div>
 
@@ -108,13 +113,15 @@ const ApplicationCard = (applicant) => {
       </div>
 
       {/* FOOTER: Skills Preview (Law of Similarity) */}
-      <div className="hidden md:flex flex-wrap gap-2 mt-4 ml-19">
-        {data.skills.map((skill, i) => (
-          <span key={i} className="text-[10px] font-bold text-zinc-500 border border-zinc-900 px-2 py-0.5 rounded uppercase hover:border-purple-500/30 transition-colors">
-            {skill}
-          </span>
-        ))}
-      </div>
+      {matchedSkills.length > 0 && (
+        <div className="hidden md:flex flex-wrap gap-2 mt-4 ml-19">
+          {matchedSkills.map((skill, i) => (
+            <span key={i} className="text-[10px] font-bold text-zinc-500 border border-zinc-900 px-2 py-0.5 rounded uppercase hover:border-purple-500/30 transition-colors">
+              {skill}
+            </span>
+          ))}
+        </div>
+      )}
     </motion.div>
   );
 };

@@ -13,7 +13,7 @@ import {
   FiShield,
   FiLoader
 } from 'react-icons/fi';
-
+import toast from 'react-hot-toast';
 
 const SignUpRec = () => {
   const navigate = useNavigate();
@@ -43,16 +43,19 @@ const SignUpRec = () => {
     setIsSubmitting(true);
     try {
       const response = await axios.post(
-        "https://projects-iii4.onrender.com/auth/signUpRecruiter",
+        `${import.meta.env.VITE_API_URL}/auth/signUpRecruiter`,
         formData,
         {
           withCredentials: true
         }
       )
       setIsSubmitting(false);
+      toast.success("Dashboard initialized! Welcome aboard.");
       navigate("/recruiter/addjob");
     } catch (error) {
       console.log("Error in submitting form", error);
+      setIsSubmitting(false);
+      toast.error(error.response?.data?.message || "Sign up failed. Please try again.");
     }
   };
 

@@ -14,7 +14,15 @@ const getInternalJobs = async (req, res) => {
             return res.status(400).json({message: "Unauthorized Login/Token not found"});
         }
 
-        let jobs = await Job.find().sort({createdAt: -1});
+        let user = await User.findOne({firebaseUid: userId});
+
+        // Get job IDs the candidate has already applied to
+        const appliedApplications = user
+            ? await Application.find({candidateId: user._id}).select("jobId")
+            : [];
+        const appliedJobIds = appliedApplications.map(app => app.jobId);
+
+        let jobs = await Job.find({_id: {$nin: appliedJobIds}}).sort({createdAt: -1});
         if(jobs.length === 0){
             return res.status(200).json({
                 message: "No jobs listed",
@@ -44,7 +52,12 @@ const getScheduledInterviews = async (req, res) => {
             return res.status(400).json({message: "User not found"});
         }
 
-        let interviews = await Interview.find({candidateId: user._id})
+        const sixHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000);
+
+        let interviews = await Interview.find({
+                                            candidateId: user._id,
+                                            scheduledAt: {$gte: sixHoursAgo}
+                                        })
                                         .populate("ApplicationId")
                                         .populate("candidateId")
                                         .populate("recruiterId")
@@ -136,11 +149,11 @@ const applyJob = async (req, res) => {
             status: "submitted",
         })
         
-        // triggerAIMatching({
-        //     applicationId: newApplication._id.toString() ,
-        //     job_text,
-        //     resumeId: resume._id
-        // });
+        triggerAIMatching({
+            applicationId: newApplication._id.toString(),
+            job_text,
+            resumeId: resume._id
+        });
 
         return res.status(200).json({message: "Applied for job successfully"});
 

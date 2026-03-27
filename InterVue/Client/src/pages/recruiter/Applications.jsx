@@ -7,11 +7,15 @@ import {
   FiSearch, FiFilter, FiMoreHorizontal, FiCheckCircle,
   FiXCircle, FiClock, FiStar, FiDownload
 } from 'react-icons/fi';
-
+import toast from 'react-hot-toast';
 
 const Applications = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const {data, isLoading} = useGetApplicationsQuery();
+  const {data, isLoading, isError} = useGetApplicationsQuery();
+
+  useEffect(() => {
+    if (isError) toast.error("Failed to load applications. Please refresh.");
+  }, [isError]);
 
   if (!data) return <div>Loading...</div>;
 

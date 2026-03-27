@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import InterviewCard from "../../components/InterviewCard.jsx";
 import {useGetInterviewsRecQuery} from "../../store/RecruiterApi.js";
+import toast from 'react-hot-toast';
 
 const Waveform = () => (
   <div className="flex items-center gap-0.5 h-4">
@@ -36,7 +37,11 @@ const AnimatedVideoIcon = () => (
 
 const InterviewsRec = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const {data, isLoading} = useGetInterviewsRecQuery();
+  const {data, isLoading, isError} = useGetInterviewsRecQuery();
+
+  useEffect(() => {
+    if (isError) toast.error("Failed to load interviews. Please refresh.");
+  }, [isError]);
 
   if(!data) return <div>Loading...</div>
   const interviews = data?.interviews;
