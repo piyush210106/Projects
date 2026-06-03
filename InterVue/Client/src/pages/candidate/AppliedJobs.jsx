@@ -17,9 +17,8 @@ const AppliedJobs = () => {
     if (isError) toast.error("Failed to load applications. Please refresh.");
   }, [isError]);
 
-  if (!data) return <div>Loading...</div>;
-  const applications = data?.applications;
-  const filteredApps = applications?.filter((app) =>
+  const applications = data?.applications || [];
+  const filteredApps = applications.filter((app) =>
     app.jobId.title?.toLowerCase().includes(searchTerm.toLowerCase())
   );
   return (

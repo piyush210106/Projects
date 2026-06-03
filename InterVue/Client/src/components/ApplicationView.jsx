@@ -26,15 +26,35 @@ const ApplicationView = () => {
   const [scheduleData, setScheduleData] = useState({ date: '', time: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  if(!data) return <div>Loading...</div>
+  if (!data || isLoading) return (
+    <div className="min-h-screen bg-black flex flex-col justify-center items-center py-20 px-6">
+       <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-10">
+           <div className="lg:col-span-4 space-y-8">
+               <div className="h-64 w-full bg-zinc-900 animate-pulse rounded-[2.5rem]" />
+               <div className="h-48 w-full bg-zinc-900 animate-pulse rounded-[2.5rem]" />
+           </div>
+           <div className="lg:col-span-8 space-y-8">
+               <div className="h-48 w-full bg-zinc-900 animate-pulse rounded-[2.5rem]" />
+               <div className="grid md:grid-cols-2 gap-8">
+                  <div className="h-64 w-full bg-zinc-900 animate-pulse rounded-[2.5rem]" />
+                  <div className="h-64 w-full bg-zinc-900 animate-pulse rounded-[2.5rem]" />
+               </div>
+           </div>
+       </div>
+    </div>
+  );
 
   const handleScheduleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await schedule({
+      const localDateTime = new Date(`${scheduleData.date}T${scheduleData.time}`);
+      await schedule({
         applicationId: application._id,
-        data: scheduleData
+        data: {
+          ...scheduleData,
+          dateTime: localDateTime.toISOString()
+        }
       }).unwrap();
       toast.success(`Interview scheduled for ${scheduleData.date} at ${scheduleData.time}`);
       navigate("/recruiter/interviews");

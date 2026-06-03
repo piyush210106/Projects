@@ -37,9 +37,9 @@ const scheduleInterview = async(req, res) => {
 
     try {
         const {applicationId, data} = req.body;
-        const interviewDateTime = new Date(`${data.date}T${data.time}`);
+        const interviewDateTime = data.dateTime ? new Date(data.dateTime) : new Date(`${data.date}T${data.time}`);
 
-        if(!applicationId || !interviewDateTime){
+        if(!applicationId || !data.date || !data.time){
                 return res.status(400).json({message: "Missing Fields"});
         }
 

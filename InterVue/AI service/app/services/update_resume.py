@@ -1,5 +1,6 @@
 from db.mongo import resume_collection
 from datetime import datetime
+from bson.objectid import ObjectId
 
 def update_resume_success(
     resume_id: str,
@@ -8,7 +9,7 @@ def update_resume_success(
     vector_id: str
 ):
     resume_collection.update_one(
-        {"_id": resume_id},
+        {"_id": ObjectId(resume_id)},
         {
            "$set": {
                 "processing_status": "completed",
@@ -22,7 +23,7 @@ def update_resume_success(
 
 def update_resume_failed(resume_id: str):
     resume_collection.update_one(
-        {"_id": resume_id},
+        {"_id": ObjectId(resume_id)},
         {
             "$set": {
                 "processing_status": "failed"

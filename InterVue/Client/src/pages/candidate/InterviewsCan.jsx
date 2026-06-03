@@ -43,8 +43,7 @@ const InterviewsCan = () => {
     if (isError) toast.error("Failed to load interviews. Please refresh.");
   }, [isError]);
 
-  if(!data) return <div>Loading...</div>
-  const interviews = data?.interviews;
+  const interviews = data?.interviews || [];
   return (
     <div className="min-h-screen text-white font-sans selection:bg-purple-500/40 p-6 md:p-12 max-w-screen my-16">
       

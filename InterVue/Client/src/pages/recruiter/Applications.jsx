@@ -17,11 +17,9 @@ const Applications = () => {
     if (isError) toast.error("Failed to load applications. Please refresh.");
   }, [isError]);
 
-  if (!data) return <div>Loading...</div>;
-
   const filteredApps = data?.filteredApplications?.filter((app) =>
     app.candidateId.profile.name?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ) || [];
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-purple-500/30 p-6 md:p-12 py-16">
       {/* Background Decor */}

@@ -18,7 +18,19 @@ const JobView = () => {
   const {id} = useParams();
   const {data, isLoading} = useGetInternalJobsQuery();
   const job = data?.jobs?.find((j) => j._id?.toString() === id);
-  if (!data) return <div>Loading...</div>;
+  if (!data || isLoading) return (
+    <div className="min-h-screen bg-black flex flex-col justify-center items-center py-20 px-6">
+       <div className="w-full max-w-6xl space-y-8">
+           <div className="h-16 w-3/4 bg-zinc-900 animate-pulse rounded-2xl" />
+           <div className="flex gap-4">
+              <div className="h-8 w-24 bg-zinc-900 animate-pulse rounded-full" />
+              <div className="h-8 w-32 bg-zinc-900 animate-pulse rounded-full" />
+           </div>
+           <div className="h-64 w-full bg-zinc-900 animate-pulse rounded-3xl" />
+           <div className="h-32 w-full bg-zinc-900 animate-pulse rounded-3xl" />
+       </div>
+    </div>
+  );
 
   const handleApply = async(e) => {
     try {

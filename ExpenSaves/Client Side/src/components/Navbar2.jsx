@@ -1,4 +1,5 @@
-import React from 'react'
+import { Wallet } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function Navbar2() {
 
@@ -7,16 +8,26 @@ export default function Navbar2() {
   };
 
   return (
-    <div className='flex justify-between overflow-x-hidden items-center w-screen space-x-4 p-2 rounded-md border-2 border-gray-200'>
-
-      <div className='flex items-center space-x-3'>
-        <img src="assets\Logo.png" alt="" className='w-[5%] rounded-md'/>
-        <h2 className='font-extrabold text-3xl'>ExpenSaves</h2>
+    <nav className="relative z-50 flex items-center justify-between px-6 py-6 w-full max-w-7xl mx-auto border-b border-white/5 bg-white/[0.02] backdrop-blur-md mb-8 rounded-b-3xl">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.4)]">
+          <Wallet className="w-6 h-6 text-white" />
+        </div>
+        <h2 className="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+          ExpenSaves
+        </h2>
       </div>
 
-      <div className='flex w-[50%]'>
-        <button className='w-[80%]' onClick={handleLogin}>Login WIth Google</button>
+      <div>
+        <motion.button 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="px-6 py-2.5 rounded-full bg-white text-purple-900 font-bold text-sm shadow-xl hover:shadow-2xl transition-all"
+          onClick={handleLogin}
+        >
+          Login With Google
+        </motion.button>
       </div>
-    </div>
+    </nav>
   )
 }

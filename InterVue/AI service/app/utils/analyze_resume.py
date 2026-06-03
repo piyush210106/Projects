@@ -1,15 +1,19 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
 import json
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-1.5-flash",
     temperature=0.3,
-    api_key=""
+    api_key=os.environ.get("GOOGLE_API_KEY")
 )
 
 analysis_prompt = PromptTemplate(
-    input_variables=["resume", "jobtext"],
+    input_variables=["resume", "job"],
     template="""
         You are an ATS resume evaluator.
 

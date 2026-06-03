@@ -18,9 +18,7 @@ const router = createBrowserRouter([
     path: "/",
     element: (
         <div>
-          <Navbar2/>
           <Landing/>
-          <Footer/>
         </div>
     )
   },
@@ -91,10 +89,16 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <>
-      <ToastContainer position="top-right" autoClose={3000} />
-      <RouterProvider router = {router}/>
-    </>
+    <div className="min-h-screen bg-[#050505] text-white selection:bg-purple-500/30 font-sans overflow-x-hidden relative">
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-purple-900/10 blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-900/10 blur-[120px]" />
+      </div>
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <ToastContainer position="top-right" autoClose={3000} theme="dark" />
+        <RouterProvider router={router} />
+      </div>
+    </div>
   )
 }
 
