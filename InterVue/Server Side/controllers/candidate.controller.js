@@ -149,11 +149,17 @@ const applyJob = async (req, res) => {
             status: "submitted",
         })
         
-        triggerAIMatching({
-            applicationId: newApplication._id.toString(),
-            job_text,
-            resumeId: resume._id
-        });
+        if (!resume.embedding_vectorId) {
+            console.log("Resume not yet vectorized, skipping AI matching.");
+        } else {
+            console.log("before resume matching")
+            triggerAIMatching({
+                applicationId: newApplication._id.toString(),
+                job_text,
+                resumeId: resume.embedding_vectorId
+            });
+            console.log("after resume matching")
+        }
 
         return res.status(200).json({message: "Applied for job successfully"});
 

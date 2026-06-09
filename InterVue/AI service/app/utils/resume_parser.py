@@ -45,12 +45,16 @@ def normalize_llm_content(content) -> str:
     if isinstance(content, str):
         return content
     if isinstance(content, list):
-        return "".join(
-            item if isinstance(item, str)
-            else item.get("text", "")
-            for item in content
-            if isinstance(item, (str, dict))
-        )
+        parts = []
+        for item in content:
+            if isinstance(item, str):
+                parts.append(item)
+            elif isinstance(item, dict) and "text" in item:
+                # LangChain content block: {'type': 'text', 'text': '...', 'extras': {...}}
+                parts.append(item["text"])
+            else:
+                parts.append(json.dumps(item))
+        return "\n".join(parts)
     raise ValueError("Unsupported LLM output format")
 
 def safe_json_parse(text: str) -> dict:

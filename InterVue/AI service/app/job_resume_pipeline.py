@@ -2,27 +2,35 @@ from db.pinecone import index
 from db.mongo import applications
 from utils.cosine import cosine_similarity
 from utils.analyze_resume import analyze_resume_with_gemini
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from google import genai
+from google.genai import types
 import os
 from dotenv import load_dotenv
 from bson.objectid import ObjectId
 
 load_dotenv()
 
-def get_embedding_model():
-    return GoogleGenerativeAIEmbeddings(
-        model="models/embedding-001",
-        google_api_key=os.environ.get("GOOGLE_API_KEY")
+EMBEDDING_MODEL = "gemini-embedding-2"
+PINECONE_DIMENSION = 768  # must match your Pinecone index dimension
+
+def get_embedding(text: str) -> list[float]:
+    client = genai.Client(api_key=os.environ.get("GOOGLE_API_KEY"))
+    result = client.models.embed_content(
+        model=EMBEDDING_MODEL,
+        contents=text,
+        config=types.EmbedContentConfig(output_dimensionality=PINECONE_DIMENSION)
     )
+    if not result.embeddings:
+        raise ValueError("Embedding API returned no embeddings.")
+    return result.embeddings[0].values or []
 
 def job_resume_match(job_text: str, resume_vector_id: str, application_id: str):
     try:
         print(f"--- Starting Job-Resume Matching ---")
         print(f"Application ID: {application_id} | Resume Vector ID: {resume_vector_id}")
         
-        embbeding_model = get_embedding_model()
         print("Generating job description embeddings...")
-        job_vector = embbeding_model.embed_query(job_text)
+        job_vector = get_embedding(job_text)
 
         print("Fetching resume vector from Pinecone...")
         result = index.fetch(ids=[resume_vector_id])
