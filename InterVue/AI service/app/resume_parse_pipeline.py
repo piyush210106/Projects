@@ -1,9 +1,9 @@
-from utils.fileDownloader import download_pdf
-from utils.pdf_loader import extract_text
-from utils.resume_parser import parse_resume
-from services.vector_store import store_resume_vector
-from services.update_resume import update_resume_failed
-from services.update_resume import update_resume_success
+from .utils.fileDownloader import download_pdf
+from .utils.pdf_loader import extract_text
+from .utils.resume_parser import parse_resume
+from .services.vector_store import store_resume_vector
+from .services.update_resume import update_resume_failed
+from .services.update_resume import update_resume_success
 
 def resume_parser_pipeline(
         resume_id: str,

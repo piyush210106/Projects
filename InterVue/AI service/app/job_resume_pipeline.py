@@ -1,7 +1,7 @@
-from db.pinecone import index
-from db.mongo import applications
-from utils.cosine import cosine_similarity
-from utils.analyze_resume import analyze_resume_with_gemini
+from .db.pinecone import index
+from .db.mongo import applications
+from .utils.cosine import cosine_similarity
+from .utils.analyze_resume import analyze_resume_with_gemini
 from google import genai
 from google.genai import types
 import os

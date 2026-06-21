@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Header, HTTPException, Depends
-from resume_parse_pipeline import resume_parser_pipeline
-from job_resume_pipeline import job_resume_match
+from .resume_parse_pipeline import resume_parser_pipeline
+from .job_resume_pipeline import job_resume_match
 from pydantic import BaseModel
 import os
 from dotenv import load_dotenv
