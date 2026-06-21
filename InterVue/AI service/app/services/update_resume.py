@@ -1,4 +1,4 @@
-from db.mongo import resume_collection
+from ..db.mongo import resume_collection
 from datetime import datetime
 from bson.objectid import ObjectId
 

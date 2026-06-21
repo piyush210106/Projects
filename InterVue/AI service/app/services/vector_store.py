@@ -2,7 +2,7 @@ from google import genai
 from google.genai import types
 import os
 from dotenv import load_dotenv
-from db.pinecone import index
+from ..db.pinecone import index
 
 load_dotenv()
 
