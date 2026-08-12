@@ -89,7 +89,7 @@ const NavbarCan = () => {
           </button>
           <div className="h-8 w-px bg-white/10 mx-2" />
           <button className="flex items-center gap-3 pl-2 pr-1 py-1 rounded-full bg-zinc-900 border border-white/10 hover:border-purple-500/50 transition-all">
-            <span className="text-sm font-medium text-gray-300 ml-2">Alex Chen</span>
+            <span className="text-sm font-medium text-gray-300 ml-2">Piyush Garg</span>
             <div className="w-8 h-8 rounded-full bg-linear-to-tr from-purple-600 to-purple-400 flex items-center justify-center text-white font-bold">
               AC
             </div>
