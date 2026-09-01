@@ -233,12 +233,12 @@ const ApplicationView = () => {
                         <p className="text-zinc-300 leading-relaxed text-sm italic">"{aiScore.analysis || "No analysis available yet."}"</p>
                      </div>
                      <div className="h-px bg-white/5" />
-                     <div>
+                     {/* <div>
                         <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-zinc-500 mb-4">
                           <FiZap className="text-purple-500" /> Recommendation
                         </h3>
                         <p className="text-zinc-300 text-sm leading-relaxed">{aiScore.recommendations || "No recommendation available yet."}</p>
-                     </div>
+                     </div> */}
                   </motion.section>
 
                   <motion.section {...fadeInUp} className="bg-zinc-950 border border-white/5 rounded-[2.5rem] p-8">
